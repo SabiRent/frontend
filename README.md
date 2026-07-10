@@ -83,3 +83,7 @@ Example:
 import Dashboard from "@/pages/Dashboard";
 import { formatCurrency } from "@/utils/formatCurrency";
 ```
+
+## Design
+
+- Figma design file: [View the design file](https://www.figma.com/design/ALUH23GpLjoVNv1J1Wfvx7/Build-SZN-3?node-id=0-1&t=O9ylsssCFDQzUIAE-1)
