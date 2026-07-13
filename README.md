@@ -1,12 +1,12 @@
-# HAVN Web Application
+# MyCompound Web Application
 
-HAVN, pronounced "haven", is a web app for landlords to manage properties, units, tenants, and rent in one place. It helps track who has paid, who is due soon, and who is overdue, with a clear payment history for every tenant.
+MyCompound is a web app for landlords to manage properties, units, tenants, and rent in one place. It helps track who has paid, who is due soon, and who is overdue, with a clear payment history for every tenant.
 
 ## Overview
 
 Many landlords still track rent with notebooks, memory, spreadsheets, or scattered messages. That makes it easy to miss due dates, forget payments, and lose track of tenant history.
 
-HAVN solves that by giving landlords a simple dashboard to:
+MyCompound solves that by giving landlords a simple dashboard to:
 
 - Organize properties and units
 - Add tenants with rent details and contact information
