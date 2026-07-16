@@ -10,12 +10,12 @@ import { AppRoutes } from "@/constants/routes";
 const SignupPage = () => {
   return (
     <main
-      className="relative min-h-screen overflow-hidden bg-[#111827] bg-cover bg-center px-5 py-8 sm:px-12"
+      className="relative min-h-screen overflow-hidden bg-[#111827] bg-cover bg-center px-5 py-5 sm:px-12"
       style={{ backgroundImage: `url(${signupWallpaper})` }}
     >
       <div className="absolute inset-0 bg-[#120C0C]/65" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-[1440px] flex-col">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-[1440px] flex-col">
         <Link
           to={AppRoutes.landing}
           className="inline-flex w-fit items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
@@ -28,13 +28,13 @@ const SignupPage = () => {
           />
         </Link>
 
-        <section className="flex flex-1 items-center justify-center py-7">
-          <form className="w-full max-w-[530px] rounded-2xl bg-[#F8FAFC] px-8 py-12 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[755px] sm:px-[86px] sm:py-[70px]">
-            <div className="mb-9">
+        <section className="flex flex-1 items-center justify-center py-3">
+          <form className="w-full max-w-[530px] rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[665px] sm:px-14 sm:py-11">
+            <div className="mb-6">
               <h1 className="text-[28px] font-bold leading-tight tracking-normal text-[#111827]">
                 New User?
               </h1>
-              <p className="mt-3 text-[17px] leading-6 text-[#9CA3AF]">
+              <p className="mt-2 text-[17px] leading-6 text-[#9CA3AF]">
                 Enter your details to create an account.
               </p>
             </div>
@@ -73,11 +73,11 @@ const SignupPage = () => {
               />
             </div>
 
-            <Button type="submit" fullWidth className="mt-12 h-10">
+            <Button type="submit" fullWidth className="mt-8 h-10">
               Create Account
             </Button>
 
-            <div className="my-5 flex items-center gap-6 text-base text-[#6B7280]">
+            <div className="my-4 flex items-center gap-6 text-base text-[#6B7280]">
               <span className="h-px flex-1 border-t-2 border-dotted border-[#B8C0CC]" />
               <span>or</span>
               <span className="h-px flex-1 border-t-2 border-dotted border-[#B8C0CC]" />
@@ -100,7 +100,7 @@ const SignupPage = () => {
               </button>
             </div>
 
-            <p className="mt-4 text-center text-sm text-[#111827]">
+            <p className="mt-3 text-center text-sm text-[#111827]">
               Have account?{" "}
               <Link
                 to={AppRoutes.login}
