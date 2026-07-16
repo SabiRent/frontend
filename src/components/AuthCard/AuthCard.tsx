@@ -5,6 +5,7 @@ interface AuthCardProps {
   subtitle?: string;
   children: ReactNode;
   headerSlot?: ReactNode; // e.g. BackHeader instead of title, for reset-password steps
+  classname?: string;
 }
 
 /**
@@ -18,7 +19,7 @@ export function AuthCard({
   headerSlot,
 }: AuthCardProps) {
   return (
-    <div className="w-full max-w-[416px] rounded-2xl bg-[#FCFCFD] shadow-xl p-8">
+    <div className="w-full max-w-[416px] rounded-[16px] bg-[#FCFCFD] shadow-xl px-10 py-18">
       {headerSlot ? (
         headerSlot
       ) : (

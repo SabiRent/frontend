@@ -1,9 +1,14 @@
 import { AppRoutes } from "@/constants/routes";
+
 import LandingPage from "@/pages/landing/LandingPage";
 import LoginPage from "@/pages/login";
-import NotFoundPage from "@/pages/NotFound";
 import SignupPage from "@/pages/signup";
-import { Route, Routes } from "react-router";
+import ForgotPassword from "@/pages/reset-password/ForgotPassword";
+import ResetPassword from "@/pages/reset-password/ResetPassword";
+import NotFoundPage from "@/pages/NotFound";
+
+import { Route, Routes } from "react-router-dom";
+
 import "./App.css";
 
 function App() {
@@ -12,6 +17,8 @@ function App() {
       <Route path={AppRoutes.landing} element={<LandingPage />} />
       <Route path={AppRoutes.login} element={<LoginPage />} />
       <Route path={AppRoutes.signup} element={<SignupPage />} />
+      <Route path={AppRoutes.forgotPassword} element={<ForgotPassword />} />
+      <Route path={AppRoutes.resetPassword} element={<ResetPassword />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
