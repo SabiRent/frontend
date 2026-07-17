@@ -22,7 +22,10 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 
     return (
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={inputId} className="text-xs font-semibold text-[#1F2937]">
+        <label
+          htmlFor={inputId}
+          className="text-xs font-semibold text-[#1F2937]"
+        >
           {label}
           {required && <span className="text-[#E11D48] ml-0.5">*</span>}
         </label>

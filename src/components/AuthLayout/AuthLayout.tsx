@@ -20,13 +20,15 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   return (
     <div
-      className="relative min-h-screen w-full bg-cover bg-center flex items-center px-6 md:px-16"
+      className="relative min-h-screen w-full bg-no-repeat flex items-center -translate-y-6 px-6 md:px-16"
       style={{
         backgroundImage: `url(${backgroundImageUrl})`,
+        backgroundSize: "100% 100%",
+        backgroundPosition: "center bottom",
         justifyContent: cardPosition === "right" ? "flex-end" : "center",
       }}
     >
-      <div className="absolute top-6 left-6 md:top-8 md:left-10">
+      <div className="absolute top-12 left-10 md:top-14 md:left-14">
         {logoSlot}
       </div>
       {children}
