@@ -7,7 +7,7 @@ import ForgotPassword from "@/pages/reset-password/ForgotPassword";
 import ResetPassword from "@/pages/reset-password/ResetPassword";
 import NotFoundPage from "@/pages/NotFound";
 
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router";
 
 import "./App.css";
 
