@@ -1,35 +1,31 @@
-import { Apple, Mail, User } from "lucide-react";
-import { Link } from "react-router";
-import compoundLogo from "@images/my-compound.png";
-import signupWallpaper from "@images/signup-wallpaper.png";
+import backgroundImg from "@/assets/images/auth-background.png";
+import logo from "@/assets/images/logo.png";
 import { Button } from "@/components/Button/Button";
 import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
 import { TextInput } from "@/components/TextInput/TextInput";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 import { AppRoutes } from "@/constants/routes";
+import { Apple, Mail, User } from "lucide-react";
+import { Link } from "react-router";
 
 const SignupPage = () => {
   return (
-    <main
-      className="relative min-h-screen overflow-hidden bg-[#111827] bg-cover bg-center px-5 py-5 sm:px-12"
-      style={{ backgroundImage: `url(${signupWallpaper})` }}
-    >
-      <div className="absolute inset-0 bg-[#120C0C]/65" aria-hidden="true" />
-
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-[1440px] flex-col">
+    <AuthLayout
+      backgroundImageUrl={backgroundImg}
+      logoSlot={
         <Link
           to={AppRoutes.landing}
           className="inline-flex w-fit items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
           aria-label="My Compound home"
         >
-          <img
-            src={compoundLogo}
-            alt="My Compound"
-            className="h-auto w-[230px] max-w-[64vw]"
-          />
+          <img src={logo} alt="My Compound" className="w-60" />
         </Link>
-
-        <section className="flex flex-1 items-center justify-center py-3">
-          <form className="w-full max-w-[530px] rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[665px] sm:px-14 sm:py-11">
+      }
+      cardPosition="center"
+    >
+      <div className="flex w-full items-center justify-center px-5 py-5 sm:px-12 my-5">
+        <div className="w-full max-w-[520px]">
+          <form className="w-full rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[665px] sm:px-10 sm:py-11">
             <div className="mb-6">
               <h1 className="text-[28px] font-bold leading-tight tracking-normal text-[#111827]">
                 New User?
@@ -110,9 +106,9 @@ const SignupPage = () => {
               </Link>
             </p>
           </form>
-        </section>
+        </div>
       </div>
-    </main>
+    </AuthLayout>
   );
 };
 
