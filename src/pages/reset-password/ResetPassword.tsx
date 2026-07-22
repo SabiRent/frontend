@@ -1,16 +1,17 @@
+import { Lock } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Lock } from "lucide-react";
 import { toast } from "sonner";
 
-import { AuthLayout } from "@/components/AuthLayout/AuthLayout";
 import { AuthCard } from "@/components/AuthCard/AuthCard";
 import { BackLink } from "@/components/BackLink/BackLink";
-import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
 import { Button } from "@/components/Button/Button";
+import { AuthLayout } from "@/components/layout/AuthLayout";
+import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
 
-import backgroundImg from "@/assets/images/backgroundimg.png";
-import logo from "@/assets/images/Group 757.png";
+import backgroundImg from "@/assets/images/auth-background.png";
+import logo from "@/assets/images/logo.png";
+import { AppRoutes } from "@/constants/routes";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -45,19 +46,16 @@ const ForgotPassword = () => {
   return (
     <AuthLayout
       backgroundImageUrl={backgroundImg}
-      logoSlot={
-        <img
-          src={logo}
-          alt="MyCompound"
-          className="w-[180px] h-auto object-contain"
-        />
-      }
+      logoSlot={<img src={logo} alt="MyCompound" className="w-60" />}
       cardPosition="center"
     >
       <div className="w-full max-w-[470px] mt-2">
         <AuthCard
           headerSlot={
-            <BackLink title="Reset Password" onBack={() => navigate(-1)} />
+            <BackLink
+              title="Reset Password"
+              onBack={() => navigate(AppRoutes.login)}
+            />
           }
         >
           <div className="mb-4 rounded-xl border border-[#D0D5DD] p-4 text-[13px] leading-5 text-[#667085]">
