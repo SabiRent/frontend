@@ -1,17 +1,15 @@
-import { AuthLayout } from "@/components/AuthLayout/AuthLayout";
 import { AuthCard } from "@/components/AuthCard/AuthCard";
 import { BackLink } from "@/components/BackLink/BackLink";
 import { Button } from "@/components/Button/Button";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 
 import { Lock, Mail } from "lucide-react";
-import { useNavigate } from "react-router";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
-import backgroundImg from "@/assets/images/backgroundimg.png";
-import logo from "@/assets/images/Group 757.png";
-
+import backgroundImg from "@/assets/images/auth-background.png";
+import logo from "@/assets/images/logo.png";
 import { AppRoutes } from "@/constants/routes";
-
 import { toast } from "sonner";
 import { forgotPassword } from "@/api/auth";
 import { TextInput } from "@/components/TextInput/TextInput";
@@ -70,13 +68,7 @@ const ResetPassword = () => {
   return (
     <AuthLayout
       backgroundImageUrl={backgroundImg}
-      logoSlot={
-        <img
-          src={logo}
-          alt="MyCompound"
-          className="w-[180px] h-auto object-contain"
-        />
-      }
+      logoSlot={<img src={logo} alt="MyCompound" className="w-60" />}
       cardPosition="center"
     >
       {/* Wrapper to visually enlarge the card without editing AuthCard */}

@@ -5,6 +5,7 @@ import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
 import ForgotPassword from "@/pages/reset-password/ForgotPassword";
 import ResetPassword from "@/pages/reset-password/ResetPassword";
+import Dashboard from "@/pages/dashboard/Dashboard";
 import NotFoundPage from "@/pages/NotFound";
 
 import { Route, Routes } from "react-router";
@@ -19,6 +20,7 @@ function App() {
       <Route path={AppRoutes.signup} element={<SignupPage />} />
       <Route path={AppRoutes.forgotPassword} element={<ForgotPassword />} />
       <Route path={AppRoutes.resetPassword} element={<ResetPassword />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
