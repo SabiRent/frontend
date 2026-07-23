@@ -1,28 +1,70 @@
 import { AuthLayout } from "@/components/AuthLayout/AuthLayout";
 import { AuthCard } from "@/components/AuthCard/AuthCard";
 import { BackLink } from "@/components/BackLink/BackLink";
-import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
 import { Button } from "@/components/Button/Button";
 
-import { Lock } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 
 import backgroundImg from "@/assets/images/backgroundimg.png";
 import logo from "@/assets/images/Group 757.png";
+
+import { AppRoutes } from "@/constants/routes";
+
 import { toast } from "sonner";
+import { forgotPassword } from "@/api/auth";
+import { TextInput } from "@/components/TextInput/TextInput";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
   const handleSubmit = async () => {
+    console.log("✅ Button clicked");
+    console.log("📧 Email:", email);
+
+    if (!email.trim()) {
+      toast.error("Please enter your email");
+      return;
+    }
+
     setLoading(true);
 
-    setTimeout(() => {
-      toast.success("Verification link has been sent to your email.");
+    try {
+      const response = await forgotPassword(email);
 
+      console.log("✅ API Response:", response);
+
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error: unknown) {
+      console.error("❌ Full Error:", error);
+
+      const isErrorWithResponse = (
+        value: unknown,
+      ): value is { response?: { data?: { message?: string } } } => {
+        return (
+          typeof value === "object" && value !== null && "response" in value
+        );
+      };
+
+      if (isErrorWithResponse(error)) {
+        console.error("❌ Response:", error.response);
+        console.error("❌ Data:", error.response?.data);
+      }
+
+      toast.error(
+        isErrorWithResponse(error)
+          ? (error.response?.data?.message ?? "Something went wrong.")
+          : "Something went wrong.",
+      );
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -41,7 +83,10 @@ const ResetPassword = () => {
       <div className="w-full max-w-[470px] -mt-4">
         <AuthCard
           headerSlot={
-            <BackLink title="Reset Password" onBack={() => navigate(-1)} />
+            <BackLink
+              title="Reset Password"
+              onBack={() => navigate(AppRoutes.login)}
+            />
           }
         >
           <div className="mb-4 rounded-xl border border-[#D0D5DD] p-4 text-[13px] leading-5 text-[#667085]">
@@ -50,10 +95,14 @@ const ResetPassword = () => {
             We will send an email with instructions on how to get access again.
           </div>
 
-          <PasswordInput
+          <TextInput
             label="Email"
             required
-            placeholder="Enter Your Email"
+            type="email"
+            placeholder="Enter your email"
+            icon={<Mail className="h-4 w-4" />}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <Button
