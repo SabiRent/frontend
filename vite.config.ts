@@ -11,6 +11,15 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] }),
   ],
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://mycompound-api.kingscode.tech",
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
