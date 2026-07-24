@@ -13,6 +13,7 @@ import UserProfileCard from "@/components/UserProfileCard/UserProfileCard";
 import { useState } from "react";
 import UserProfileDropdown from "@/components/UserProfileDropdown/UserProfileDropdown";
 import logo from "@/assets/images/logo.png";
+import { useLocation, useNavigate } from "react-router";
 
 const user = {
   name: "Raymond Agu",
@@ -21,7 +22,8 @@ const user = {
 
 const Sidebar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const navigate = useNavigate();
+  const location = useLocation();
   return (
     <aside className="flex h-screen w-[270px] flex-col bg-[#173B67] px-6 py-8">
       {/* Logo */}
@@ -32,52 +34,52 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav className="flex flex-col gap-3">
         <SidebarItem
-          icon={<Home size={16} />}
           label="Dashboard"
-          active={activeItem === "Dashboard"}
-          onClick={() => setActiveItem("Dashboard")}
+          icon={<Home size={18} />}
+          active={location.pathname === "/dashboard"}
+          onClick={() => navigate("/dashboard")}
         />
 
         <SidebarItem
-          icon={<Building2 size={20} />}
           label="Properties"
-          active={activeItem === "Properties"}
-          onClick={() => setActiveItem("Properties")}
+          icon={<Building2 size={18} />}
+          active={location.pathname === "/properties"}
+          onClick={() => navigate("/dashboard/properties")}
         />
 
         <SidebarItem
-          icon={<Boxes size={20} />}
           label="Units"
-          active={activeItem === "Units"}
-          onClick={() => setActiveItem("Units")}
+          icon={<Boxes size={18} />}
+          active={location.pathname === "/units"}
+          onClick={() => navigate("/dashboard/units")}
         />
 
         <SidebarItem
-          icon={<Users size={20} />}
           label="Tenants"
-          active={activeItem === "Tenants"}
-          onClick={() => setActiveItem("Tenants")}
+          icon={<Users size={18} />}
+          active={location.pathname === "/tenants"}
+          onClick={() => navigate("/dashboard/tenants")}
         />
 
         <SidebarItem
-          icon={<CreditCard size={20} />}
           label="Payments"
-          active={activeItem === "Payments"}
-          onClick={() => setActiveItem("Payments")}
+          icon={<CreditCard size={18} />}
+          active={location.pathname === "/payments"}
+          onClick={() => navigate("/dashboard/payments")}
         />
 
         <SidebarItem
-          icon={<BarChart3 size={20} />}
           label="Reports"
-          active={activeItem === "Reports"}
-          onClick={() => setActiveItem("Reports")}
+          icon={<BarChart3 size={18} />}
+          active={location.pathname === "/reports"}
+          onClick={() => navigate("/dashboard/reports")}
         />
 
         <SidebarItem
-          icon={<Settings size={20} />}
           label="Settings"
-          active={activeItem === "Settings"}
-          onClick={() => setActiveItem("Settings")}
+          icon={<Settings size={18} />}
+          active={location.pathname === "/settings"}
+          onClick={() => navigate("/dashboard/settings")}
         />
       </nav>
 
