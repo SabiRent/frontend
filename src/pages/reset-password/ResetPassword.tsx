@@ -1,46 +1,64 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
-
-import { AuthCard } from "@/components/AuthCard/AuthCard";
-import { BackLink } from "@/components/BackLink/BackLink";
-import { Button } from "@/components/Button/Button";
-import { AuthLayout } from "@/components/layout/AuthLayout";
-import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
 
 import backgroundImg from "@/assets/images/auth-background.png";
 import logo from "@/assets/images/logo.png";
+import { AuthCard } from "@/components/AuthCard/AuthCard";
+import { BackLink } from "@/components/BackLink/BackLink";
+import { Button } from "@/components/Button/Button";
+import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 import { AppRoutes } from "@/constants/routes";
+import { useResetPassword } from "@/hooks/useResetPassword";
+import {
+  resetPasswordSchema,
+  type ResetPasswordForm,
+} from "@/validations/auth";
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const resetPassword = useResetPassword();
+  const token = searchParams.get("token") ?? "";
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ResetPasswordForm>({
+    resolver: zodResolver(resetPasswordSchema),
+  });
 
-  const handleSubmit = async () => {
-    if (!password || !confirmPassword) {
-      toast.error("Please fill in all fields.");
+  const onSubmit = (values: ResetPasswordForm) => {
+    if (!token) {
+      toast.error("This reset link is missing. Please request another one.");
       return;
     }
 
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
-      return;
-    }
-
-    setLoading(true);
-
-    // Mock backend
-    setTimeout(() => {
-      setLoading(false);
-
-      toast.success("Password reset successfully!");
-
-      navigate("/login");
-    }, 1500);
+    resetPassword.mutate(
+      {
+        token,
+        newPassword: values.newPassword,
+      },
+      {
+        onSuccess: () => {
+          reset();
+          toast.success(
+            "Your password has been updated successfully. You can now log in.",
+          );
+          navigate(AppRoutes.login);
+        },
+        onError: () => {
+          toast.error(
+            "This reset link has expired or is not valid. Please request a new one.",
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -49,7 +67,7 @@ const ForgotPassword = () => {
       logoSlot={<img src={logo} alt="MyCompound" className="w-60" />}
       cardPosition="center"
     >
-      <div className="w-full max-w-[470px] mt-2">
+      <div className="mt-2 w-full max-w-[470px]">
         <AuthCard
           headerSlot={
             <BackLink
@@ -63,36 +81,43 @@ const ForgotPassword = () => {
             easy for you to remember.
           </div>
 
-          <PasswordInput
-            label="New Password"
-            required
-            placeholder="Enter new password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <PasswordInput
-            label="Confirm Password"
-            required
-            placeholder="Confirm new password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-
-          <Button
-            fullWidth
-            size="lg"
-            isLoading={loading}
-            onClick={handleSubmit}
-            className="mt-5 h-10"
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
           >
-            <Lock className="mr-2 h-4 w-4" />
-            Reset Password
-          </Button>
+            <PasswordInput
+              label="New Password"
+              required
+              placeholder="Enter new password"
+              autoComplete="new-password"
+              error={errors.newPassword?.message}
+              {...register("newPassword")}
+            />
+
+            <PasswordInput
+              label="Confirm Password"
+              required
+              placeholder="Confirm new password"
+              autoComplete="new-password"
+              error={errors.confirmPassword?.message}
+              {...register("confirmPassword")}
+            />
+
+            <Button
+              type="submit"
+              fullWidth
+              size="lg"
+              isLoading={resetPassword.isPending}
+              className="mt-1 h-10"
+            >
+              <Lock className="mr-2 h-4 w-4" />
+              Update Password
+            </Button>
+          </form>
         </AuthCard>
       </div>
     </AuthLayout>
   );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

@@ -1,0 +1,4 @@
+export const ErrorCode = {
+  EMAIL_REQUIRED: "EMAIL_REQUIRED",
+  INVALID_EXPIRED_TOKEN: "INVALID_EXPIRED_TOKEN",
+} as const;
