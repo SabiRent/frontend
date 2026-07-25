@@ -28,7 +28,7 @@ export function AuthLayout({
         justifyContent: cardPosition === "right" ? "flex-end" : "center",
       }}
     >
-      <div className="absolute top-12 left-10 md:top-14 md:left-14">
+      <div className="absolute top-12 left-10 md:top-14 xl:left-14 hidden lg:block">
         {logoSlot}
       </div>
       {children}

@@ -1,68 +1,50 @@
-import { AuthCard } from "@/components/AuthCard/AuthCard";
-import { BackLink } from "@/components/BackLink/BackLink";
-import { Button } from "@/components/Button/Button";
-import { AuthLayout } from "@/components/layout/AuthLayout";
-
-import { Lock, Mail } from "lucide-react";
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
+import { ForgotPassword } from "@/api/auth";
+import { TextInput } from "@/components/TextInput/TextInput";
 
 import backgroundImg from "@/assets/images/auth-background.png";
 import logo from "@/assets/images/logo.png";
-import { AppRoutes } from "@/constants/routes";
-import { toast } from "sonner";
-import { forgotPassword } from "@/api/auth";
+import { AuthCard } from "@/components/AuthCard/AuthCard";
+import { BackLink } from "@/components/BackLink/BackLink";
+import { Button } from "@/components/Button/Button";
 import { TextInput } from "@/components/TextInput/TextInput";
+import { AuthLayout } from "@/components/layout/AuthLayout";
+import { AppRoutes } from "@/constants/routes";
+import { useForgotPassword } from "@/hooks/useForgotPassword";
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordForm,
+} from "@/validations/auth";
 
-const ResetPassword = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const handleSubmit = async () => {
-    console.log("✅ Button clicked");
-    console.log("📧 Email:", email);
+  const forgotPassword = useForgotPassword();
 
-    if (!email.trim()) {
-      toast.error("Please enter your email");
-      return;
-    }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ForgotPasswordForm>({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
 
-    setLoading(true);
-
-    try {
-      const response = await forgotPassword(email);
-
-      console.log("✅ API Response:", response);
-
-      if (response.success) {
-        toast.success(response.message);
-      } else {
-        toast.error(response.message);
-      }
-    } catch (error: unknown) {
-      console.error("❌ Full Error:", error);
-
-      const isErrorWithResponse = (
-        value: unknown,
-      ): value is { response?: { data?: { message?: string } } } => {
-        return (
-          typeof value === "object" && value !== null && "response" in value
+  const onSubmit = (values: ForgotPasswordForm) => {
+    forgotPassword.mutate(values, {
+      onSuccess: () => {
+        reset();
+        toast.success(
+          "If this email is registered, you will receive a link to reset your password.",
         );
-      };
-
-      if (isErrorWithResponse(error)) {
-        console.error("❌ Response:", error.response);
-        console.error("❌ Data:", error.response?.data);
-      }
-
-      toast.error(
-        isErrorWithResponse(error)
-          ? (error.response?.data?.message ?? "Something went wrong.")
-          : "Something went wrong.",
-      );
-    } finally {
-      setLoading(false);
-    }
+      },
+      onError: () => {
+        toast.error("We could not send the reset link. Please try again.");
+      },
+    });
   };
 
   return (
@@ -71,8 +53,7 @@ const ResetPassword = () => {
       logoSlot={<img src={logo} alt="MyCompound" className="w-60" />}
       cardPosition="center"
     >
-      {/* Wrapper to visually enlarge the card without editing AuthCard */}
-      <div className="w-full max-w-[470px] -mt-4">
+      <div className="-mt-4 w-full max-w-[470px]">
         <AuthCard
           headerSlot={
             <BackLink
@@ -84,33 +65,38 @@ const ResetPassword = () => {
           <div className="mb-4 rounded-xl border border-[#D0D5DD] p-4 text-[13px] leading-5 text-[#667085]">
             To reset your password, submit your registered email address below.
             <br />
-            We will send an email with instructions on how to get access again.
+            We will send you a link to reset your password.
           </div>
 
-          <TextInput
-            label="Email"
-            required
-            type="email"
-            placeholder="Enter your email"
-            icon={<Mail className="h-4 w-4" />}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <Button
-            onClick={handleSubmit}
-            isLoading={loading}
-            fullWidth
-            size="lg"
-            className="mt-6 h-9"
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
           >
-            <Lock className="mr-2 h-4 w-4" />
-            Reset password
-          </Button>
+            <TextInput
+              label="Email"
+              required
+              type="email"
+              placeholder="Enter your email"
+              autoComplete="email"
+              error={errors.email?.message}
+              {...register("email")}
+            />
+
+            <Button
+              type="submit"
+              isLoading={forgotPassword.isPending}
+              fullWidth
+              size="lg"
+              className="mt-2 h-9"
+            >
+              <Lock className="mr-2 h-4 w-4" />
+              Reset password
+            </Button>
+          </form>
         </AuthCard>
       </div>
     </AuthLayout>
   );
 };
 
-export default ResetPassword;
+export default ForgotPassword;
