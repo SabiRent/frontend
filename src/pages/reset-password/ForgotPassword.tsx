@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { ForgotPassword } from "@/api/auth";
-import { TextInput } from "@/components/TextInput/TextInput";
 
 import backgroundImg from "@/assets/images/auth-background.png";
 import logo from "@/assets/images/logo.png";
