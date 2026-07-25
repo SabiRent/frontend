@@ -1,10 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
-import { toast } from "sonner";
-import { ForgotPassword } from "@/api/auth";
-
 import backgroundImg from "@/assets/images/auth-background.png";
 import logo from "@/assets/images/logo.png";
 import { AuthCard } from "@/components/AuthCard/AuthCard";
@@ -18,6 +11,11 @@ import {
   forgotPasswordSchema,
   type ForgotPasswordForm,
 } from "@/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
