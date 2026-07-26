@@ -1,0 +1,103 @@
+import {
+  BarChart3,
+  Boxes,
+  Building2,
+  CreditCard,
+  Home,
+  Settings,
+  Users,
+} from "lucide-react";
+
+import logo from "@/assets/images/logo.png";
+import SidebarItem from "@/components/SidebarItem/SidebarItem";
+import UserProfileCard from "@/components/UserProfileCard/UserProfileCard";
+import UserProfileDropdown from "@/components/UserProfileDropdown/UserProfileDropdown";
+import { AppRoutes } from "@/constants/routes";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+
+const user = {
+  name: "Raymond Agu",
+  email: "raymondagu@gmail.com",
+};
+
+const Sidebar = () => {
+  const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  return (
+    <aside className="flex h-screen w-[270px] flex-col bg-[#173B67] px-6 py-8">
+      {/* Logo */}
+      <div className="mb-8 mb-12">
+        <img src={logo} alt="MyCompound" className="w-[170px]" />
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex flex-col gap-2">
+        <SidebarItem
+          label="Dashboard"
+          icon={<Home size={18} />}
+          active={location.pathname === "/dashboard"}
+          onClick={() => navigate(AppRoutes.dashboard)}
+        />
+
+        <SidebarItem
+          label="Properties"
+          icon={<Building2 size={18} />}
+          active={location.pathname === "/properties"}
+          onClick={() => navigate(AppRoutes.dashboardProperties)}
+        />
+
+        <SidebarItem
+          label="Units"
+          icon={<Boxes size={18} />}
+          active={location.pathname === "/units"}
+          onClick={() => navigate(AppRoutes.dashboardUnits)}
+        />
+
+        <SidebarItem
+          label="Tenants"
+          icon={<Users size={18} />}
+          active={location.pathname === "/tenants"}
+          onClick={() => navigate(AppRoutes.dashboardTenants)}
+        />
+
+        <SidebarItem
+          label="Payments"
+          icon={<CreditCard size={18} />}
+          active={location.pathname === "/payments"}
+          onClick={() => navigate(AppRoutes.dashboardPayments)}
+        />
+
+        <SidebarItem
+          label="Reports"
+          icon={<BarChart3 size={18} />}
+          active={location.pathname === "/reports"}
+          onClick={() => navigate(AppRoutes.dashboardReports)}
+        />
+
+        <SidebarItem
+          label="Settings"
+          icon={<Settings size={18} />}
+          active={location.pathname === "/settings"}
+          onClick={() => navigate(AppRoutes.dashboardSettings)}
+        />
+      </nav>
+
+      {/* User Profile */}
+      <div className="relative mt-auto">
+        <div onClick={() => setShowMenu(!showMenu)}>
+          <UserProfileCard name={user.name} email={user.email} />
+        </div>
+
+        {showMenu && (
+          <div className="absolute bottom-20 left-0">
+            <UserProfileDropdown />
+          </div>
+        )}
+      </div>
+    </aside>
+  );
+};
+
+export default Sidebar;

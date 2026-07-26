@@ -1,5 +1,14 @@
 export const AppRoutes = {
   landing: "/",
   login: "/auth/login",
-  signup: "/auth/register",
-} as const;
+  signup: "/auth/signup",
+  forgotPassword: "/auth/forgot-password",
+  resetPassword: "/auth/reset-password",
+  dashboard: "/dashboard",
+  dashboardProperties: "/dashboard/properties",
+  dashboardUnits: "/dashboard/units",
+  dashboardTenants: "/dashboard/tenants",
+  dashboardPayments: "/dashboard/payments",
+  dashboardReports: "/dashboard/reports",
+  dashboardSettings: "/dashboard/settings",
+};

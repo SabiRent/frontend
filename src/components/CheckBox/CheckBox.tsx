@@ -25,7 +25,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           `.trim()}
           {...props}
         />
-        <span className="text-sm text-[#4B5563]">{label}</span>
+        <span className="text-xs text-[#4B5563]">{label}</span>
       </label>
     );
   },
