@@ -1,18 +1,19 @@
 import {
-  Home,
-  Building2,
-  Boxes,
-  Users,
-  CreditCard,
   BarChart3,
+  Boxes,
+  Building2,
+  CreditCard,
+  Home,
   Settings,
+  Users,
 } from "lucide-react";
 
+import logo from "@/assets/images/logo.png";
 import SidebarItem from "@/components/SidebarItem/SidebarItem";
 import UserProfileCard from "@/components/UserProfileCard/UserProfileCard";
-import { useState } from "react";
 import UserProfileDropdown from "@/components/UserProfileDropdown/UserProfileDropdown";
-import logo from "@/assets/images/logo.png";
+import { AppRoutes } from "@/constants/routes";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 const user = {
@@ -32,54 +33,54 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-3">
+      <nav className="flex flex-col gap-2">
         <SidebarItem
           label="Dashboard"
           icon={<Home size={18} />}
           active={location.pathname === "/dashboard"}
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate(AppRoutes.dashboard)}
         />
 
         <SidebarItem
           label="Properties"
           icon={<Building2 size={18} />}
           active={location.pathname === "/properties"}
-          onClick={() => navigate("/dashboard/properties")}
+          onClick={() => navigate(AppRoutes.dashboardProperties)}
         />
 
         <SidebarItem
           label="Units"
           icon={<Boxes size={18} />}
           active={location.pathname === "/units"}
-          onClick={() => navigate("/dashboard/units")}
+          onClick={() => navigate(AppRoutes.dashboardUnits)}
         />
 
         <SidebarItem
           label="Tenants"
           icon={<Users size={18} />}
           active={location.pathname === "/tenants"}
-          onClick={() => navigate("/dashboard/tenants")}
+          onClick={() => navigate(AppRoutes.dashboardTenants)}
         />
 
         <SidebarItem
           label="Payments"
           icon={<CreditCard size={18} />}
           active={location.pathname === "/payments"}
-          onClick={() => navigate("/dashboard/payments")}
+          onClick={() => navigate(AppRoutes.dashboardPayments)}
         />
 
         <SidebarItem
           label="Reports"
           icon={<BarChart3 size={18} />}
           active={location.pathname === "/reports"}
-          onClick={() => navigate("/dashboard/reports")}
+          onClick={() => navigate(AppRoutes.dashboardReports)}
         />
 
         <SidebarItem
           label="Settings"
           icon={<Settings size={18} />}
           active={location.pathname === "/settings"}
-          onClick={() => navigate("/dashboard/settings")}
+          onClick={() => navigate(AppRoutes.dashboardSettings)}
         />
       </nav>
 

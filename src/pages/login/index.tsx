@@ -1,15 +1,64 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Apple, Mail } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
+
+import backgroundImg from "@/assets/images/auth-background.png";
+import logo from "@/assets/images/logo.png";
 import { Button } from "@/components/Button/Button";
 import { Checkbox } from "@/components/CheckBox/CheckBox";
 import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
 import { TextInput } from "@/components/TextInput/TextInput";
 import { AuthLayout } from "@/components/layout/AuthLayout";
+import { ErrorCode } from "@/constants/error-codes";
 import { AppRoutes } from "@/constants/routes";
-import backgroundImg from "@/assets/images/auth-background.png";
-import logo from "@/assets/images/logo.png";
-import { Apple, Mail } from "lucide-react";
-import { Link } from "react-router";
+import { useLogin } from "@/hooks/useLogin";
+import { getApiErrorCode } from "@/services/api/errors";
+import { loginSchema, type LoginForm } from "@/validations/auth";
+
+const getLoginErrorMessage = (error: unknown) => {
+  switch (getApiErrorCode(error)) {
+    case ErrorCode.INVALID_EMAIL_PWD:
+      return "The email or password is not correct.";
+    case ErrorCode.TOO_MANY_REQUESTS:
+      return "Too many login attempts. Please try again later.";
+    case ErrorCode.USER_DEACTIVATED:
+      return "This account is currently inactive.";
+    case ErrorCode.EMAIL_NOT_VERIFIED:
+      return "Please verify your email before logging in.";
+    default:
+      return "We could not log you in. Please try again.";
+  }
+};
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const login = useLogin();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = (values: LoginForm) => {
+    login.mutate(values, {
+      onSuccess: (response) => {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("authUser", JSON.stringify(response.data.user));
+
+        toast.success(response.message || "You have logged in successfully.");
+        navigate(AppRoutes.dashboard, { replace: true });
+      },
+      onError: (error) => {
+        toast.error(getLoginErrorMessage(error));
+      },
+    });
+  };
+
   return (
     <AuthLayout
       backgroundImageUrl={backgroundImg}
@@ -29,8 +78,11 @@ const LoginPage = () => {
       cardPosition="center"
     >
       <div className="flex max-h-screen w-full items-center justify-center px-5 py-5 sm:px-12">
-        <div className="w-full max-w-[455px] max-h-[calc(100vh-2.5rem)] overflow-y-auto">
-          <form className="w-full rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[510px] sm:px-10 sm:py-11">
+        <div className="max-h-[calc(100vh-2.5rem)] w-full max-w-[455px] overflow-y-auto">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[510px] sm:px-10 sm:py-11"
+          >
             <div className="mb-6">
               <h1 className="text-[24px] font-bold leading-tight tracking-normal text-[#111827]">
                 Welcome Back!
@@ -48,6 +100,8 @@ const LoginPage = () => {
                 placeholder="Email"
                 autoComplete="email"
                 icon={<Mail className="h-4 w-4" />}
+                error={errors.email?.message}
+                {...register("email")}
               />
 
               <PasswordInput
@@ -55,6 +109,8 @@ const LoginPage = () => {
                 required
                 placeholder="Password"
                 autoComplete="current-password"
+                error={errors.password?.message}
+                {...register("password")}
               />
             </div>
 
@@ -68,7 +124,12 @@ const LoginPage = () => {
               </Link>
             </div>
 
-            <Button type="submit" fullWidth className="mt-7 h-10">
+            <Button
+              type="submit"
+              fullWidth
+              isLoading={login.isPending}
+              className="mt-7 h-10"
+            >
               Login
             </Button>
 

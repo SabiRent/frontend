@@ -1,14 +1,54 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Apple, Mail, User } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
+
 import backgroundImg from "@/assets/images/auth-background.png";
 import logo from "@/assets/images/logo.png";
 import { Button } from "@/components/Button/Button";
 import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
 import { TextInput } from "@/components/TextInput/TextInput";
 import { AuthLayout } from "@/components/layout/AuthLayout";
+import { ErrorCode } from "@/constants/error-codes";
 import { AppRoutes } from "@/constants/routes";
-import { Apple, Mail, User } from "lucide-react";
-import { Link } from "react-router";
+import { useSignup } from "@/hooks/useSignup";
+import { getApiErrorCode } from "@/services/api/errors";
+import { signupSchema, type SignupForm } from "@/validations/auth";
+
+const getSignupErrorMessage = (error: unknown) => {
+  switch (getApiErrorCode(error)) {
+    case ErrorCode.DUPLICATE_ENTRY:
+      return "An account with this email already exists. Please log in.";
+    default:
+      return "We could not create your account. Please try again.";
+  }
+};
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+  const signup = useSignup();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupForm>({
+    resolver: zodResolver(signupSchema),
+  });
+
+  const onSubmit = (values: SignupForm) => {
+    signup.mutate(values, {
+      onSuccess: (response) => {
+        toast.success(response.message || "Your account has been created.");
+        navigate(AppRoutes.login);
+      },
+      onError: (error) => {
+        toast.error(getSignupErrorMessage(error));
+      },
+    });
+  };
+
   return (
     <AuthLayout
       backgroundImageUrl={backgroundImg}
@@ -23,9 +63,12 @@ const SignupPage = () => {
       }
       cardPosition="center"
     >
-      <div className="flex w-full items-center justify-center px-5 py-5 sm:px-12 my-5">
+      <div className="my-5 flex w-full items-center justify-center px-5 py-5 sm:px-12">
         <div className="w-full max-w-[520px]">
-          <form className="w-full rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[665px] sm:px-10 sm:py-11">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[665px] sm:px-10 sm:py-11"
+          >
             <div className="mb-6">
               <h1 className="text-[28px] font-bold leading-tight tracking-normal text-[#111827]">
                 New User?
@@ -43,6 +86,8 @@ const SignupPage = () => {
                 placeholder="Full name"
                 autoComplete="name"
                 icon={<User className="h-4 w-4" />}
+                error={errors.fullName?.message}
+                {...register("fullName")}
               />
 
               <TextInput
@@ -52,6 +97,8 @@ const SignupPage = () => {
                 placeholder="Email"
                 autoComplete="email"
                 icon={<Mail className="h-4 w-4" />}
+                error={errors.email?.message}
+                {...register("email")}
               />
 
               <PasswordInput
@@ -59,6 +106,8 @@ const SignupPage = () => {
                 required
                 placeholder="Password"
                 autoComplete="new-password"
+                error={errors.password?.message}
+                {...register("password")}
               />
 
               <PasswordInput
@@ -66,10 +115,17 @@ const SignupPage = () => {
                 required
                 placeholder="Confirm password"
                 autoComplete="new-password"
+                error={errors.confirmPassword?.message}
+                {...register("confirmPassword")}
               />
             </div>
 
-            <Button type="submit" fullWidth className="mt-8 h-10">
+            <Button
+              type="submit"
+              fullWidth
+              isLoading={signup.isPending}
+              className="mt-8 h-10"
+            >
               Create Account
             </Button>
 
