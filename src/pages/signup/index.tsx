@@ -1,128 +1,52 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Apple, Mail, User } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
+
 import backgroundImg from "@/assets/images/auth-background.png";
 import logo from "@/assets/images/logo.png";
 import { Button } from "@/components/Button/Button";
 import { PasswordInput } from "@/components/PasswordInput/PasswordInput";
 import { TextInput } from "@/components/TextInput/TextInput";
 import { AuthLayout } from "@/components/layout/AuthLayout";
+import { ErrorCode } from "@/constants/error-codes";
 import { AppRoutes } from "@/constants/routes";
-import { Apple, Mail, User } from "lucide-react";
-import { useState } from "react";
-import type { FormEvent } from "react";
-import { Link, useNavigate } from "react-router";
-import { toast } from "sonner";
+import { useSignup } from "@/hooks/useSignup";
+import { getApiErrorCode } from "@/services/api/errors";
+import { signupSchema, type SignupForm } from "@/validations/auth";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
-const SIGNUP_ENDPOINT = `${API_BASE_URL}/api/v1/auth/signup`;
-
-type ApiErrorResponse = {
-  error?: string;
-  errors?: unknown;
-  message?: string | string[];
-};
-
-const getReadableApiMessage = (value: unknown): string | undefined => {
-  if (typeof value === "string") {
-    return value;
-  }
-
-  if (Array.isArray(value)) {
-    return value.map(getReadableApiMessage).filter(Boolean).join(" ");
-  }
-
-  if (value && typeof value === "object") {
-    const record = value as Record<string, unknown>;
-    const directMessage =
-      getReadableApiMessage(record.message) ??
-      getReadableApiMessage(record.error) ??
-      getReadableApiMessage(record.errors);
-
-    if (directMessage) {
-      return directMessage;
-    }
-
-    return Object.values(record)
-      .map(getReadableApiMessage)
-      .filter(Boolean)
-      .join(" ");
-  }
-
-  return undefined;
-};
-
-const getSignupErrorMessage = async (response: Response) => {
-  const fallbackMessage =
-    response.status === 404
-      ? "Signup endpoint was not found. Please check the API base URL."
-      : `Unable to create account. (${response.status})`;
-
-  try {
-    const contentType = response.headers.get("content-type");
-
-    if (contentType?.includes("application/json")) {
-      const data = (await response.json()) as ApiErrorResponse;
-      const message = getReadableApiMessage(data);
-
-      return message || fallbackMessage;
-    }
-
-    const text = await response.text();
-    return text || fallbackMessage;
-  } catch {
-    return fallbackMessage;
+const getSignupErrorMessage = (error: unknown) => {
+  switch (getApiErrorCode(error)) {
+    case ErrorCode.DUPLICATE_ENTRY:
+      return "An account with this email already exists. Please log in.";
+    default:
+      return "We could not create your account. Please try again.";
   }
 };
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const signup = useSignup();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupForm>({
+    resolver: zodResolver(signupSchema),
+  });
 
-    if (!fullName || !email || !password || !confirmPassword) {
-      toast.error("Please fill in all fields.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(SIGNUP_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName,
-          email,
-          password,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(await getSignupErrorMessage(response));
-      }
-
-      toast.success("Account created successfully.");
-      navigate(AppRoutes.login);
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to create account. Please try again.",
-      );
-    } finally {
-      setLoading(false);
-    }
+  const onSubmit = (values: SignupForm) => {
+    signup.mutate(values, {
+      onSuccess: (response) => {
+        toast.success(response.message || "Your account has been created.");
+        navigate(AppRoutes.login);
+      },
+      onError: (error) => {
+        toast.error(getSignupErrorMessage(error));
+      },
+    });
   };
 
   return (
@@ -139,10 +63,10 @@ const SignupPage = () => {
       }
       cardPosition="center"
     >
-      <div className="flex w-full items-center justify-center px-5 py-5 sm:px-12 my-5">
+      <div className="my-5 flex w-full items-center justify-center px-5 py-5 sm:px-12">
         <div className="w-full max-w-[520px]">
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             className="w-full rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[665px] sm:px-10 sm:py-11"
           >
             <div className="mb-6">
@@ -162,8 +86,8 @@ const SignupPage = () => {
                 placeholder="Full name"
                 autoComplete="name"
                 icon={<User className="h-4 w-4" />}
-                value={fullName}
-                onChange={(event) => setFullName(event.target.value)}
+                error={errors.fullName?.message}
+                {...register("fullName")}
               />
 
               <TextInput
@@ -173,8 +97,8 @@ const SignupPage = () => {
                 placeholder="Email"
                 autoComplete="email"
                 icon={<Mail className="h-4 w-4" />}
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                error={errors.email?.message}
+                {...register("email")}
               />
 
               <PasswordInput
@@ -182,8 +106,8 @@ const SignupPage = () => {
                 required
                 placeholder="Password"
                 autoComplete="new-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                error={errors.password?.message}
+                {...register("password")}
               />
 
               <PasswordInput
@@ -191,15 +115,15 @@ const SignupPage = () => {
                 required
                 placeholder="Confirm password"
                 autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
+                error={errors.confirmPassword?.message}
+                {...register("confirmPassword")}
               />
             </div>
 
             <Button
               type="submit"
               fullWidth
-              isLoading={loading}
+              isLoading={signup.isPending}
               className="mt-8 h-10"
             >
               Create Account
