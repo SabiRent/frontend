@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router";
-
 import { Button } from "@/components/Button/Button";
 import logo from "@/assets/images/logo.svg"; // adjust once logo asset is saved
+import { AppRoutes } from "@/constants/routes";
 
 const NAV_LINKS = [
-  { label: "Home", href: "/" },
+  { label: "Home", href: AppRoutes.landing },
   { label: "Features", href: "#features" },
   { label: "Why Us", href: "#why-us" },
   { label: "Resources", href: "#resources" },
@@ -40,7 +40,7 @@ export default function Navbar() {
             className="h-5 px-8"
             variant="outline"
             size="sm"
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate(AppRoutes.signup)}
           >
             Sign Up
           </Button>
@@ -48,7 +48,7 @@ export default function Navbar() {
             className="h-5 px-8"
             variant="primary"
             size="sm"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate(AppRoutes.login)}
           >
             Log In
           </Button>
@@ -56,10 +56,7 @@ export default function Navbar() {
       </div>
 
       {/* Bottom line */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-px 
-bg-[linear-gradient(to_right,rgba(99,163,176,1)_0%,rgba(20,106,125,1)_25%,rgba(197,136,12,1)_50%,rgba(30,58,95,1)_75%,rgba(99,163,176,1)_100%)]"
-      >
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-[linear-gradient(to_right,rgba(99,163,176,1)_0%,rgba(20,106,125,1)_25%,rgba(197,136,12,1)_50%,rgba(30,58,95,1)_75%,rgba(99,163,176,1)_100%)]">
         <div className="mx-auto h-full w-60 bg-yellow-" />
       </div>
     </header>

@@ -54,7 +54,10 @@ const FEATURES = [
 
 export default function WhyUsSection() {
   return (
-    <section className="relative overflow-hidden bg-white px-0 py-55">
+    <section
+      id="why-us"
+      className="relative overflow-hidden bg-white px-0 py-55"
+    >
       {/* Decorative corner shapes */}
       <div className="absolute -left-6 -top-6 h-[110.5px] w-[121.5px] rounded-2xl bg-[rgba(183,212,218,1)]" />
       <div className="absolute -right-6 -top-6 h-[110.5px] w-[121.5px] rounded-2xl bg-[rgba(183,212,218,1)]" />
@@ -116,7 +119,10 @@ export default function WhyUsSection() {
         </div>
       </div>
 
-      <div className="mx-39 -mt-[150px] translate-y-50 grid max-w-6xl grid-cols-1 items-center gap-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr]">
+      <div
+        id="features"
+        className="mx-39 -mt-[150px] translate-y-50 grid max-w-6xl grid-cols-1 items-center gap-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr]"
+      >
         <div>
           <span className="text-sm font-semibold text-[rgb(22,117,137)]">
             What We Give —

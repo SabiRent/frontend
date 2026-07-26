@@ -32,7 +32,10 @@ export default function FooterSection() {
   return (
     <>
       {/* CTA Banner */}
-      <section className="bg-[rgba(248,251,252,1)] px-6 py-8 md:px-16">
+      <section
+        id="resources"
+        className="bg-[rgba(248,251,252,1)] px-6 py-8 md:px-16"
+      >
         <div className="mx-auto max-w-6xl h-[337px] rounded-3xl bg-[rgba(251,244,231,1)] px-8 py-14 text-center">
           <h2 className="text-2xl font-bold text-ink md:text-3xl">
             Take The Stress Out of Managing Your Properties.
