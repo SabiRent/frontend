@@ -47,12 +47,12 @@ const portfolioSummary = [
 const PortfolioSummary = () => {
   return (
     <div className="flex flex-col gap-6">
-      <p className="font-bold">Portfolio Summary</p>
+      <h6 className="font-bold">Portfolio Summary</h6>
       <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-5">
         {portfolioSummary.map((item) => (
           <div
             key={item.label}
-            className="rounded-lg bg-white px-4 py-3 shadow-sm shadow-[#FFE6FE80] sm:px-5"
+            className="rounded-lg bg-white px-4 py-3 shadow-sm shadow-[#FFE6FE80] "
           >
             <div className="flex items-center gap-3">
               <div
