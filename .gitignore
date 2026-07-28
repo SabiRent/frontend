@@ -24,8 +24,5 @@ dist-ssr
 *.sw?
 .agents
 .codex
-<<<<<<< HEAD
 http
-=======
-http
->>>>>>> ed72207 (.)
+test_images
