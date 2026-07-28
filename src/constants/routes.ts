@@ -11,4 +11,6 @@ export const AppRoutes = {
   dashboardPayments: "/dashboard/payments",
   dashboardReports: "/dashboard/reports",
   dashboardSettings: "/dashboard/settings",
+  dashboardProfile: "/dashboard/profile",
+  dashboardNotifications: "/dashboard/notifications",
 };

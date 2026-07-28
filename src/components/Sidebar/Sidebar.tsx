@@ -1,12 +1,4 @@
-import {
-  BarChart3,
-  Boxes,
-  Building2,
-  CreditCard,
-  Home,
-  Settings,
-  Users,
-} from "lucide-react";
+import { Bell, Boxes, Building2, CreditCard, Home, Users } from "lucide-react";
 
 import logo from "@/assets/images/logo.png";
 import SidebarItem from "@/components/SidebarItem/SidebarItem";
@@ -70,17 +62,10 @@ const Sidebar = () => {
         />
 
         <SidebarItem
-          label="Reports"
-          icon={<BarChart3 size={18} />}
-          active={location.pathname === AppRoutes.dashboardReports}
-          onClick={() => navigate(AppRoutes.dashboardReports)}
-        />
-
-        <SidebarItem
-          label="Settings"
-          icon={<Settings size={18} />}
-          active={location.pathname === AppRoutes.dashboardSettings}
-          onClick={() => navigate(AppRoutes.dashboardSettings)}
+          label="Notifications"
+          icon={<Bell size={18} />}
+          active={location.pathname === AppRoutes.dashboardNotifications}
+          onClick={() => navigate(AppRoutes.dashboardNotifications)}
         />
       </nav>
 

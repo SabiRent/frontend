@@ -1,10 +1,10 @@
-import { Bell, Plus, SlidersHorizontal, ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Bell, Plus, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import SearchBar from "@/components/SearchBar/SearchBar";
 import { Button } from "@/components/Button/Button";
 import AddPropertyModal from "@/components/forms/AddPropertyModal";
+import SearchBar from "@/components/SearchBar/SearchBar";
 
 const PropertiesToolbar = () => {
   const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false);
