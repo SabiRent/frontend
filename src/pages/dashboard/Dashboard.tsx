@@ -1,10 +1,11 @@
+import DetailedDashboard from "@/components/Dashboard/DetailedDashboard";
+import EmptyDashboard from "@/components/Dashboard/EmptyDashboard";
+import { properties } from "@/data";
+
 const Dashboard = () => {
-  return (
-    <>
-      <h1 className="text-2xl font-bold">Dashboard</h1>
-      <p className="mt-4 text-gray-600">Dashboard content goes here.</p>
-    </>
-  );
+  const hasProperties = properties.length > 0;
+
+  return <>{hasProperties ? <DetailedDashboard /> : <EmptyDashboard />}</>;
 };
 
 export default Dashboard;

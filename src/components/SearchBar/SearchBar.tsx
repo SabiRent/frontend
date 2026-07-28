@@ -1,18 +1,26 @@
+import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 
 interface SearchBarProps {
   placeholder?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 }
 
 const SearchBar = ({
   placeholder = "Search...",
   value,
   onChange,
+  className,
 }: SearchBarProps) => {
   return (
-    <div className="flex h-11 w-full max-w-md items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-4">
+    <div
+      className={cn(
+        "flex h-11 w-full max-w-md items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-4",
+        className,
+      )}
+    >
       <Search size={18} className="text-[#9CA3AF]" />
 
       <input
@@ -20,7 +28,9 @@ const SearchBar = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="w-full bg-transparent text-sm outline-none placeholder:text-[#9CA3AF]"
+        className={cn(
+          "w-full bg-transparent text-sm outline-none placeholder:text-[#9CA3AF]",
+        )}
       />
     </div>
   );

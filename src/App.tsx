@@ -13,8 +13,6 @@ import PublicRoute from "@/components/routes/PublicRoute";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import Payments from "@/pages/dashboard/payments";
 import Properties from "@/pages/dashboard/properties";
-import Reports from "@/pages/dashboard/reports";
-import Settings from "@/pages/dashboard/settings";
 import Tenants from "@/pages/dashboard/tenants";
 import Units from "@/pages/dashboard/units";
 
@@ -22,6 +20,7 @@ import NotFoundPage from "@/pages/NotFound";
 
 import { Route, Routes } from "react-router";
 
+import Notification from "@/pages/dashboard/Notification";
 import "./App.css";
 
 function App() {
@@ -49,8 +48,10 @@ function App() {
           <Route path={AppRoutes.dashboardUnits} element={<Units />} />
           <Route path={AppRoutes.dashboardTenants} element={<Tenants />} />
           <Route path={AppRoutes.dashboardPayments} element={<Payments />} />
-          <Route path={AppRoutes.dashboardReports} element={<Reports />} />
-          <Route path={AppRoutes.dashboardSettings} element={<Settings />} />
+          <Route
+            path={AppRoutes.dashboardNotifications}
+            element={<Notification />}
+          />
         </Route>
       </Route>
 
