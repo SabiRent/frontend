@@ -1,9 +1,16 @@
+import PropertiesToolbar from "@/components/PropertiesToolbar/PropertiesToolbar";
+import PropertiesHeader from "@/components/PropertiesHeader/PropertiesHeader";
+import PropertyList from "@/components/PropertyList/PropertyList";
+import Pagination from "@/components/Pagination/Pagination";
+
 const Properties = () => {
   return (
-    <>
-      <h1 className="text-2xl font-bold">Properties</h1>
-      <p className="mt-4 text-gray-600">Properties content goes here.</p>
-    </>
+    <div className="space-y-7 pr-10">
+      <PropertiesToolbar />
+      <PropertiesHeader />
+      <PropertyList />
+      <Pagination />
+    </div>
   );
 };
 
