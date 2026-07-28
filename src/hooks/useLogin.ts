@@ -1,18 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/services/api/client";
-import type { ApiResponse } from "@/services/api/types";
+import type { ApiResponse, AuthTokenData } from "@/services/api/types";
 import type { LoginForm } from "@/validations/auth";
 
-interface LoginData {
-  accessToken: string;
-  user: {
-    id: string;
-    email: string;
-    role: string;
-  };
-}
-
-type LoginResponse = ApiResponse<LoginData>;
+type LoginResponse = ApiResponse<AuthTokenData>;
 
 export function useLogin() {
   return useMutation({

@@ -15,6 +15,7 @@ import { ErrorCode } from "@/constants/error-codes";
 import { AppRoutes } from "@/constants/routes";
 import { useLogin } from "@/hooks/useLogin";
 import { getApiErrorCode } from "@/services/api/errors";
+import { useAuthStore } from "@/stores/authStore";
 import { loginSchema, type LoginForm } from "@/validations/auth";
 
 const getLoginErrorMessage = (error: unknown) => {
@@ -35,6 +36,7 @@ const getLoginErrorMessage = (error: unknown) => {
 const LoginPage = () => {
   const navigate = useNavigate();
   const login = useLogin();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const {
     register,
@@ -47,8 +49,7 @@ const LoginPage = () => {
   const onSubmit = (values: LoginForm) => {
     login.mutate(values, {
       onSuccess: (response) => {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("authUser", JSON.stringify(response.data.user));
+        setAuth(response.data.accessToken, response.data.user);
 
         toast.success(response.message || "You have logged in successfully.");
         navigate(AppRoutes.dashboard, { replace: true });

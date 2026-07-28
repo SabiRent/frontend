@@ -1,4 +1,4 @@
-import avatar from "@/assets/images/avatar.png";
+import { Avatar } from "@/components/Avatar/Avatar";
 import { Button } from "@/components/Button/Button";
 import PaymentSummary from "@/components/Dashboard/PaymentSummary";
 import PortfolioSummary from "@/components/Dashboard/PortfolioSummary";
@@ -6,12 +6,15 @@ import RecentActivity from "@/components/Dashboard/RecentActivity";
 import UpcomingPayment from "@/components/Dashboard/UpcomingPayment";
 import AddPropertyModal from "@/components/forms/AddPropertyModal";
 import SearchBar from "@/components/SearchBar/SearchBar";
+import { useAuthStore } from "@/stores/authStore";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const DetailedDashboard = () => {
   const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false);
+  const user = useAuthStore((state) => state.user);
+  const firstName = user?.fullName?.split(" ")[0] ?? "there";
 
   return (
     <>
@@ -34,13 +37,16 @@ const DetailedDashboard = () => {
 
         <div className="flex justify-between gap-6 items-center flex-col md:flex-row">
           <div className="flex items-center gap-4 flex-1 ">
-            <img
-              src={avatar}
-              alt="User Avatar"
-              className="h-20 w-20 rounded-full"
+            <Avatar
+              fullname={user?.fullName}
+              src={user?.avatarUrl}
+              size="lg"
+              alt={user?.fullName ?? "User avatar"}
             />
             <div className="space-y-2">
-              <h6 className="text-2xl font-semibold">Welcome back, Raymond!</h6>
+              <h6 className="text-2xl font-semibold">
+                Welcome back, {firstName}!
+              </h6>
               <p className="text-sm">
                 Here’s what’s happening with your properties today
               </p>
