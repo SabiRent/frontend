@@ -44,42 +44,42 @@ const Sidebar = () => {
         <SidebarItem
           label="Properties"
           icon={<Building2 size={18} />}
-          active={location.pathname === "/properties"}
+          active={location.pathname === AppRoutes.dashboardProperties}
           onClick={() => navigate(AppRoutes.dashboardProperties)}
         />
 
         <SidebarItem
           label="Units"
           icon={<Boxes size={18} />}
-          active={location.pathname === "/units"}
+          active={location.pathname === AppRoutes.dashboardUnits}
           onClick={() => navigate(AppRoutes.dashboardUnits)}
         />
 
         <SidebarItem
           label="Tenants"
           icon={<Users size={18} />}
-          active={location.pathname === "/tenants"}
+          active={location.pathname === AppRoutes.dashboardTenants}
           onClick={() => navigate(AppRoutes.dashboardTenants)}
         />
 
         <SidebarItem
           label="Payments"
           icon={<CreditCard size={18} />}
-          active={location.pathname === "/payments"}
+          active={location.pathname === AppRoutes.dashboardPayments}
           onClick={() => navigate(AppRoutes.dashboardPayments)}
         />
 
         <SidebarItem
           label="Reports"
           icon={<BarChart3 size={18} />}
-          active={location.pathname === "/reports"}
+          active={location.pathname === AppRoutes.dashboardReports}
           onClick={() => navigate(AppRoutes.dashboardReports)}
         />
 
         <SidebarItem
           label="Settings"
           icon={<Settings size={18} />}
-          active={location.pathname === "/settings"}
+          active={location.pathname === AppRoutes.dashboardSettings}
           onClick={() => navigate(AppRoutes.dashboardSettings)}
         />
       </nav>
