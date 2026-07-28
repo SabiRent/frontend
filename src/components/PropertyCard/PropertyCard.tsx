@@ -8,14 +8,14 @@ interface PropertyCardProps {
 }
 import { Pencil, Plus, Trash2 } from "lucide-react";
 
-const PropertyCard = ({
+const PropertyCard: React.FC<PropertyCardProps> = ({
   image,
   name,
   type,
   units,
   addressLine1,
   addressLine2,
-}: PropertyCardProps) => {
+}) => {
   return (
     <div className="relative h-[310px] overflow-hidden rounded-[18px] border border-[#2A91A2] shadow-md">
       {/* Background Image */}

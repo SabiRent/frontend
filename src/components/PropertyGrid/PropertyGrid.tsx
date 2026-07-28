@@ -1,10 +1,10 @@
-import PropertyCard from "@/components/PropertyCard/PropertyCard";
-import sunshine from "@/assets/images/properties/sunshine.png";
-import peace from "@/assets/images/properties/peace.png";
-import hillcrest from "@/assets/images/properties/hillcrest.png";
 import cedar from "@/assets/images/properties/cedar.png";
-import maple from "@/assets/images/properties/maple.png";
 import emerald from "@/assets/images/properties/emerald.png";
+import hillcrest from "@/assets/images/properties/hillcrest.png";
+import maple from "@/assets/images/properties/maple.png";
+import peace from "@/assets/images/properties/peace.png";
+import sunshine from "@/assets/images/properties/sunshine.png";
+import PropertyCard from "@/components/PropertyCard/PropertyCard";
 
 const PropertyGrid = () => {
   return (

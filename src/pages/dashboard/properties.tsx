@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import PropertiesToolbar from "@/components/PropertiesToolbar/PropertiesToolbar";
-import PropertiesHeader from "@/components/PropertiesHeader/PropertiesHeader";
-import PropertyList from "@/components/PropertyList/PropertyList";
 import Pagination from "@/components/Pagination/Pagination";
-import PropertyCard from "@/components/PropertyGrid/PropertyGrid";
+import PropertiesHeader from "@/components/PropertiesHeader/PropertiesHeader";
+import PropertiesToolbar from "@/components/PropertiesToolbar/PropertiesToolbar";
+import PropertyGrid from "@/components/PropertyGrid/PropertyGrid";
+import PropertyList from "@/components/PropertyList/PropertyList";
 
 const Properties = () => {
   const [view, setView] = useState<"list" | "grid">("list");
@@ -15,11 +15,7 @@ const Properties = () => {
 
       <PropertiesHeader view={view} setView={setView} />
 
-      {view === "list" ? (
-        <PropertyList />
-      ) : (
-        <PropertyCard image="" name="" type="" units={0} address="" />
-      )}
+      {view === "list" ? <PropertyList /> : <PropertyGrid />}
 
       <Pagination />
     </div>
