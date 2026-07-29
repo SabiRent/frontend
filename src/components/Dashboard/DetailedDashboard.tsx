@@ -9,10 +9,12 @@ import SearchBar from "@/components/SearchBar/SearchBar";
 import { useAuthStore } from "@/stores/authStore";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { useNavigate } from "react-router";
+import { AppRoutes } from "@/constants/routes";
 
 const DetailedDashboard = () => {
   const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false);
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const firstName = user?.fullName?.split(" ")[0] ?? "there";
 
@@ -71,9 +73,8 @@ const DetailedDashboard = () => {
       <AddPropertyModal
         open={isAddPropertyOpen}
         onOpenChange={setIsAddPropertyOpen}
-        onSubmit={() => {
-          toast.success("Property details are ready to submit.");
-          setIsAddPropertyOpen(false);
+        onSuccess={() => {
+          navigate(AppRoutes.dashboardProperties);
         }}
       />
     </>

@@ -65,7 +65,7 @@ export function Modal({
   footer,
   hideCloseButton = false,
   width = "500px",
-  backgroundColor = "#F8FBFC",
+  backgroundColor = "#FDFEFE",
   borderRadius = "12px",
   className,
 }: ModalProps) {

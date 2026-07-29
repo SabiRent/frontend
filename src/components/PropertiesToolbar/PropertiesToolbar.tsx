@@ -1,12 +1,19 @@
 import { ArrowUpDown, Bell, Plus, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
 import { Button } from "@/components/Button/Button";
 import AddPropertyModal from "@/components/forms/AddPropertyModal";
 import SearchBar from "@/components/SearchBar/SearchBar";
 
-const PropertiesToolbar = () => {
+interface PropertiesToolbarProps {
+  search: string;
+  onSearchChange: (value: string) => void;
+}
+
+const PropertiesToolbar = ({
+  search,
+  onSearchChange,
+}: PropertiesToolbarProps) => {
   const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false);
 
   return (
@@ -25,7 +32,11 @@ const PropertiesToolbar = () => {
         <div className="flex items-center justify-between gap-6">
           <div className="flex items-center gap-6">
             <div className="w-[420px]">
-              <SearchBar placeholder="Search properties by name or address" />
+              <SearchBar
+                placeholder="Search properties by name or address"
+                value={search}
+                onChange={(event) => onSearchChange(event.target.value)}
+              />
             </div>
 
             <button className="flex h-10 w-13 items-center justify-center rounded-full border border-[#D0D5DD] bg-white hover:bg-[#F9FAFB]">
@@ -60,10 +71,6 @@ const PropertiesToolbar = () => {
       <AddPropertyModal
         open={isAddPropertyOpen}
         onOpenChange={setIsAddPropertyOpen}
-        onSubmit={() => {
-          toast.success("Property details are ready to submit.");
-          setIsAddPropertyOpen(false);
-        }}
       />
     </>
   );
