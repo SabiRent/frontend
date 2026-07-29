@@ -61,6 +61,11 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     setShowLogoutConfirm(true);
   };
 
+  const handleProfileClick = () => {
+    setShowMenu(false);
+    navigateAndClose(AppRoutes.dashboardProfile);
+  };
+
   const navigateAndClose = (route: string) => {
     navigate(route);
     onClose();
@@ -153,7 +158,10 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
         {showMenu && (
           <div className="absolute bottom-[calc(100%+0.75rem)] left-0 z-10 w-full">
-            <UserProfileDropdown onLogout={handleLogoutClick} />
+            <UserProfileDropdown
+              onProfile={handleProfileClick}
+              onLogout={handleLogoutClick}
+            />
           </div>
         )}
       </div>
