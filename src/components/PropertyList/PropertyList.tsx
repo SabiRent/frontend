@@ -1,7 +1,14 @@
-import { properties } from "@/data";
+import emptyProperty from "@/assets/images/empty-property.png";
+import type { Property } from "@/services/api/types";
 import PropertyRow from "../PropertyRow/PropertyRow";
 
-const PropertyList = () => {
+interface PropertyListProps {
+  properties: Property[];
+  onEdit?: (property: Property) => void;
+  onDelete?: (property: Property) => void;
+}
+
+const PropertyList = ({ properties, onEdit, onDelete }: PropertyListProps) => {
   return (
     <div className="w-94% rounded-lg border border-[#D0D5DD] bg-[#FFFFFF] p-6">
       {/* Header */}
@@ -16,19 +23,28 @@ const PropertyList = () => {
       </div>
 
       <div className="mt-2 space-y-3">
-        {properties.map((property, index) => (
+        {properties.map((property) => (
           <PropertyRow
-            key={index}
-            image={property.image}
+            key={property.id}
+            image={property.image ?? emptyProperty}
             name={property.name}
-            type={property.type}
-            addressLine1={property.addressLine1}
-            addressLine2={property.addressLine2}
-            units={property.units}
-            occupied={property.occupied}
-            vacant={property.vacant}
+            description={property.description}
+            addressLine1={property.address.street}
+            addressLine2={[property.address.city, property.address.state]
+              .filter(Boolean)
+              .join(", ")}
+            units={property.unitCount}
+            occupied="—"
+            vacant="—"
+            onEdit={() => onEdit?.(property)}
+            onDelete={() => onDelete?.(property)}
           />
         ))}
+        {properties.length === 0 && (
+          <p className="py-8 text-center text-sm text-[#667085]">
+            No properties found.
+          </p>
+        )}
       </div>
     </div>
   );

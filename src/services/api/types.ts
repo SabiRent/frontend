@@ -37,3 +37,33 @@ export interface AuthTokenData {
 }
 
 export type RefreshTokenResponse = ApiResponse<AuthTokenData>;
+
+export interface Property {
+  id: string;
+  owner: string;
+  name: string;
+  address: {
+    street: string;
+    city: string;
+    state?: string;
+    country?: string;
+  };
+  unitCount: number;
+  description?: string;
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PropertyPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface PropertyListResponse {
+  success: true;
+  properties: Property[];
+  pagination: PropertyPagination;
+}
