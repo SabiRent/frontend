@@ -1,4 +1,12 @@
-import { Bell, Boxes, Building2, CreditCard, Home, Users } from "lucide-react";
+import {
+  Bell,
+  Boxes,
+  Building2,
+  CreditCard,
+  Home,
+  Users,
+  X,
+} from "lucide-react";
 
 import logo from "@/assets/images/logo.png";
 import { Button } from "@/components/Button/Button";
@@ -18,7 +26,12 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 
-const Sidebar = () => {
+type SidebarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const navigate = useNavigate();
@@ -48,61 +61,89 @@ const Sidebar = () => {
     setShowLogoutConfirm(true);
   };
 
+  const navigateAndClose = (route: string) => {
+    navigate(route);
+    onClose();
+  };
+
   return (
-    <aside className="flex h-screen w-[270px] flex-col bg-[#173B67] px-6 py-8">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen w-[280px] flex-col bg-[#173B67] px-5 py-6 shadow-2xl shadow-slate-950/20 transition-transform duration-300 ease-out md:static md:z-auto md:w-[270px] md:translate-x-0 md:shadow-none ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Logo */}
-      <div className="mb-8 mb-12">
+      <div className="mb-10 flex items-center justify-between px-2">
         <img src={logo} alt="MyCompound" className="w-[170px]" />
+        <button
+          type="button"
+          aria-label="Close navigation menu"
+          className="inline-flex size-9 items-center justify-center rounded-lg text-white/75 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 md:hidden"
+          onClick={onClose}
+        >
+          <X size={21} />
+        </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-1.5" aria-label="Main navigation">
         <SidebarItem
           label="Dashboard"
           icon={<Home size={18} />}
           active={location.pathname === "/dashboard"}
-          onClick={() => navigate(AppRoutes.dashboard)}
+          onClick={() => navigateAndClose(AppRoutes.dashboard)}
         />
 
         <SidebarItem
           label="Properties"
           icon={<Building2 size={18} />}
           active={location.pathname === AppRoutes.dashboardProperties}
-          onClick={() => navigate(AppRoutes.dashboardProperties)}
+          onClick={() => navigateAndClose(AppRoutes.dashboardProperties)}
         />
 
         <SidebarItem
           label="Units"
           icon={<Boxes size={18} />}
           active={location.pathname === AppRoutes.dashboardUnits}
-          onClick={() => navigate(AppRoutes.dashboardUnits)}
+          onClick={() => navigateAndClose(AppRoutes.dashboardUnits)}
         />
 
         <SidebarItem
           label="Tenants"
           icon={<Users size={18} />}
           active={location.pathname === AppRoutes.dashboardTenants}
-          onClick={() => navigate(AppRoutes.dashboardTenants)}
+          onClick={() => navigateAndClose(AppRoutes.dashboardTenants)}
         />
 
         <SidebarItem
           label="Payments"
           icon={<CreditCard size={18} />}
           active={location.pathname === AppRoutes.dashboardPayments}
-          onClick={() => navigate(AppRoutes.dashboardPayments)}
+          onClick={() => navigateAndClose(AppRoutes.dashboardPayments)}
         />
 
         <SidebarItem
           label="Notifications"
           icon={<Bell size={18} />}
           active={location.pathname === AppRoutes.dashboardNotifications}
-          onClick={() => navigate(AppRoutes.dashboardNotifications)}
+          onClick={() => navigateAndClose(AppRoutes.dashboardNotifications)}
         />
       </nav>
 
       {/* User Profile */}
-      <div className="relative mt-auto">
-        <div onClick={() => setShowMenu(!showMenu)}>
+      <div className="relative mt-auto border-t border-white/10 pt-4">
+        <div
+          role="button"
+          tabIndex={0}
+          className="cursor-pointer rounded-2xl transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/70"
+          onClick={() => setShowMenu(!showMenu)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setShowMenu((visible) => !visible);
+            }
+          }}
+        >
           <UserProfileCard
             name={user?.fullName ?? "User"}
             email={user?.email ?? ""}
@@ -111,7 +152,7 @@ const Sidebar = () => {
         </div>
 
         {showMenu && (
-          <div className="absolute bottom-20 left-0">
+          <div className="absolute bottom-[calc(100%+0.75rem)] left-0 z-10 w-full">
             <UserProfileDropdown onLogout={handleLogoutClick} />
           </div>
         )}
