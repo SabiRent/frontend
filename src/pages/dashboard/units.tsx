@@ -1,9 +1,17 @@
+import UnitsToolbar from "@/components/UnitsToolbar/UnitsToolbar";
+import UnitTable from "@/components/UnitTable/UnitTable";
+
 const Units = () => {
   return (
-    <>
-      <h1 className="text-2xl font-bold">Units</h1>
-      <p className="mt-4 text-gray-600">Units content goes here.</p>
-    </>
+    <div className="space-y-8">
+      <UnitsToolbar />
+
+      <h2 className="text-[24px] font-semibold text-[#000000]">Total units</h2>
+
+      <div className="-mr-10">
+        <UnitTable />
+      </div>
+    </div>
   );
 };
 
