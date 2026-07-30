@@ -24,6 +24,11 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const authConfig = config as AuthRequestConfig;
   const token = useAuthStore.getState().accessToken;
+
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  }
+
   if (token && !authConfig._skipAuthRefresh) {
     config.headers.Authorization = `Bearer ${token}`;
   }

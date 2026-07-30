@@ -1,32 +1,56 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const Pagination = () => {
+interface PaginationProps {
+  page: number;
+  totalPages: number;
+  total: number;
+  limit: number;
+  onPageChange: (page: number) => void;
+}
+
+const Pagination = ({
+  page,
+  totalPages,
+  total,
+  limit,
+  onPageChange,
+}: PaginationProps) => {
+  const firstItem = total === 0 ? 0 : (page - 1) * limit + 1;
+  const lastItem = Math.min(page * limit, total);
+
   return (
     <div className="mt-6 flex items-center justify-between">
       {/* Left */}
-      <p className="text-sm text-[#667085]">Showing 1 to 6 of 6 properties</p>
+      <p className="text-sm text-[#667085]">
+        Showing {firstItem} to {lastItem} of {total} properties
+      </p>
 
       {/* Right */}
       <div className="flex items-center gap-3">
         {/* Previous */}
-        <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#D0D5DD] bg-white text-[#667085] hover:bg-[#F9FAFB]">
+        <button
+          type="button"
+          disabled={page <= 1}
+          onClick={() => onPageChange(page - 1)}
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#D0D5DD] bg-white text-[#667085] hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-40"
+        >
           <ChevronLeft size={18} />
         </button>
 
         {/* Current page */}
         <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#167589] font-semibold text-white">
-          1
+          {page}
         </button>
 
         {/* Next */}
-        <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#D0D5DD] bg-white text-[#667085] hover:bg-[#F9FAFB]">
+        <button
+          type="button"
+          disabled={page >= totalPages}
+          onClick={() => onPageChange(page + 1)}
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#D0D5DD] bg-white text-[#667085] hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-40"
+        >
           <ChevronRight size={18} />
         </button>
-
-        {/* Page size */}
-        <select className="h-10 rounded-lg border border-[#D0D5DD] bg-white px-3 text-sm text-[#344054] outline-none">
-          <option>10 / Page</option>
-        </select>
       </div>
     </div>
   );

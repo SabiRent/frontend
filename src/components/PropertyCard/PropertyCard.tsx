@@ -5,8 +5,12 @@ interface PropertyCardProps {
   units: number;
   addressLine1: string;
   addressLine2: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 import { Pencil, Plus, Trash2 } from "lucide-react";
+
+import CustomTooltip from "@/components/CustomTooltip/CustomTooltip";
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   image,
@@ -15,6 +19,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   units,
   addressLine1,
   addressLine2,
+  onEdit,
+  onDelete,
 }) => {
   return (
     <div className="relative h-[310px] overflow-hidden rounded-[18px] border border-[#2A91A2] shadow-md">
@@ -40,21 +46,40 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </p>
 
         {/* Button */}
-        <button className=" flex h-8 items-center rounded-md bg-[#F2F2F2] px-3 text-[11px] font-medium text-[#333333]">
-          <Plus size={12} className="text-[#C58B18]" />
-          Tap to Add Tenant
-        </button>
+        <CustomTooltip content="Add unit">
+          <button
+            type="button"
+            className="flex h-8 items-center rounded-md bg-[#F2F2F2] px-3 text-[11px] font-medium text-[#333333] transition-colors hover:bg-[#F0FAFC] hover:text-[#167589] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#167589]/40"
+          >
+            <Plus size={12} className="text-[#167589]" />
+            Tap to Add Tenant
+          </button>
+        </CustomTooltip>
       </div>
 
       {/* Edit */}
-      <button className="absolute bottom-1 left-2 flex h-8 w-8 items-center justify-center rounded-md bg-white shadow">
-        <Pencil size={16} className="text-[#555]" />
-      </button>
+      <CustomTooltip content="Edit property">
+        <button
+          type="button"
+          onClick={onEdit}
+          aria-label={`Edit ${name}`}
+          className="absolute bottom-1 left-2 flex h-8 w-8 items-center justify-center rounded-md bg-white text-[#555] shadow transition-colors hover:bg-[#F0FAFC] hover:text-[#167589] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#167589]/40"
+        >
+          <Pencil size={16} className="text-[#555]" />
+        </button>
+      </CustomTooltip>
 
       {/* Delete */}
-      <button className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-md bg-white shadow">
-        <Trash2 size={16} className="text-[#555]" />
-      </button>
+      <CustomTooltip content="Delete property">
+        <button
+          type="button"
+          onClick={onDelete}
+          aria-label={`Delete ${name}`}
+          className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-md bg-white text-[#555] shadow transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+        >
+          <Trash2 size={16} className="text-[#555]" />
+        </button>
+      </CustomTooltip>
     </div>
   );
 };
