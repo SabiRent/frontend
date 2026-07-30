@@ -1,25 +1,29 @@
 import { User, Headphones, LogOut } from "lucide-react";
+import { Link } from "react-router";
+
+import { AppRoutes } from "@/constants/routes";
 
 interface UserProfileDropdownProps {
-  onProfile?: () => void;
+  onNavigate?: () => void;
   onSupport?: () => void;
   onLogout?: () => void;
 }
 
 const UserProfileDropdown = ({
-  onProfile,
+  onNavigate,
   onSupport,
   onLogout,
 }: UserProfileDropdownProps) => {
   return (
     <div className="w-[220px] overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-lg">
-      <button
-        onClick={onProfile}
+      <Link
+        to={AppRoutes.dashboardProfile}
+        onClick={onNavigate}
         className="flex w-full items-center gap-3 px-4 py-3 text-sm text-[#344054] transition hover:bg-[#F9FAFB]"
       >
         <User size={18} />
         Profile
-      </button>
+      </Link>
 
       <button
         onClick={onSupport}
