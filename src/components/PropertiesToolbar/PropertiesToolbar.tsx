@@ -1,6 +1,5 @@
 import { ArrowUpDown, Bell, Plus, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
 import { Button } from "@/components/Button/Button";
 import AddPropertyModal from "@/components/forms/AddPropertyModal";
@@ -72,10 +71,6 @@ const PropertiesToolbar = ({
       <AddPropertyModal
         open={isAddPropertyOpen}
         onOpenChange={setIsAddPropertyOpen}
-        onSubmit={() => {
-          toast.success("Property details are ready to submit.");
-          setIsAddPropertyOpen(false);
-        }}
       />
     </>
   );
