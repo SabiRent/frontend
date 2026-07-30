@@ -24,7 +24,7 @@ const DashboardLayout = () => {
         />
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col md:ml-[270px]">
         <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-slate-200/80 bg-white/90 px-4 py-3 backdrop-blur md:hidden">
           <button
             type="button"
