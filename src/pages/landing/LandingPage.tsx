@@ -7,7 +7,7 @@ import Footer from "@/components/layout/Footer";
 
 const LandingPage = () => {
   return (
-    <div>
+    <div className="mx-auto max-w-[1440px]">
       <Navbar />
       <HeroSection />
       <PainPointBar />

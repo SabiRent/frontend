@@ -41,7 +41,7 @@ export default function FooterSection() {
             Take The Stress Out of Managing Your Properties.
           </h2>
 
-          <p className="mx-auto mt-4 max-w-xl text-sm text-[rgba(125,129,130,1)]">
+          <p className="mx-auto mt-4 max-w-[718px] text-left font-semibold text-[17px] text-[rgba(125,129,130,1)]">
             Managing just one property? or an entire portfolio? MyCompound gives
             you the tools you need to stay organized.
           </p>
@@ -144,7 +144,7 @@ export default function FooterSection() {
           </div>
         </div>
 
-        <div className="mx-auto mt-6 max-w-6xl border-t border-[rgba(195,197,198,1)] py-4 text-xs text-ink-muted">
+        <div className="mx-auto mt-6 w-full max-w-6xl border-t border-[rgba(195,197,198,1)] py-4 text-xs text-ink-muted">
           © 2026. Copyright and All rights reserved.
         </div>
       </footer>
