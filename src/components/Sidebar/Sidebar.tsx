@@ -68,7 +68,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 flex h-screen w-[280px] flex-col bg-[#173B67] px-5 py-6 shadow-2xl shadow-slate-950/20 transition-transform duration-300 ease-out md:static md:z-auto md:w-[270px] md:translate-x-0 md:shadow-none ${
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen w-[270px] flex-col bg-[#173B67] px-5 py-6 shadow-2xl shadow-slate-950/20 transition-transform duration-300 ease-out md:translate-x-0 md:shadow-none ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
