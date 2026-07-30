@@ -1,12 +1,14 @@
 import houseImage from "@/assets/images/empty-property.png";
 import { Button } from "@/components/Button/Button";
 import AddPropertyModal from "@/components/forms/AddPropertyModal";
+import { AppRoutes } from "@/constants/routes";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const EmptyDashboard = () => {
   const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -38,9 +40,8 @@ const EmptyDashboard = () => {
       <AddPropertyModal
         open={isAddPropertyOpen}
         onOpenChange={setIsAddPropertyOpen}
-        onSubmit={() => {
-          toast.success("Property details are ready to submit.");
-          setIsAddPropertyOpen(false);
+        onSuccess={() => {
+          navigate(AppRoutes.dashboardProperties);
         }}
       />
     </>

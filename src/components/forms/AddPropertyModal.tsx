@@ -3,36 +3,71 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus, Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { Button } from "@/components/Button/Button";
 import Modal from "@/components/Modal/Modal";
 import { TextInput } from "@/components/TextInput/TextInput";
+import { useCreateProperty } from "@/hooks/useCreateProperty";
+import { useUpdateProperty } from "@/hooks/useUpdateProperty";
+import type { Property } from "@/services/api/types";
 import { cn } from "@/lib/utils";
 import {
-  addPropertySchema,
-  type AddPropertyFormInput,
-  type AddPropertyFormValues,
+  propertyFormSchema,
+  type PropertyFormFields,
+  type PropertyFormInput,
 } from "@/validations/property";
-
-type AddPropertySubmitValues = Omit<AddPropertyFormValues, "image">;
 
 interface AddPropertyModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit?: (values: AddPropertyFormValues) => void | Promise<void>;
+  property?: Property | null;
+  onSuccess?: (property: Property) => void;
   isSubmitting?: boolean;
 }
 
-export function AddPropertyModal({
+const AddPropertyModal = ({
   open,
   onOpenChange,
-  onSubmit,
+  property = null,
+  onSuccess,
   isSubmitting = false,
-}: AddPropertyModalProps) {
+}: AddPropertyModalProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [imageRemoved, setImageRemoved] = useState(false);
+  const createProperty = useCreateProperty();
+  const updateProperty = useUpdateProperty();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<PropertyFormInput, unknown, PropertyFormFields>({
+    resolver: zodResolver(propertyFormSchema),
+    defaultValues: {
+      name: "",
+      street: "",
+      city: "",
+      unitCount: undefined,
+      description: "",
+    },
+  });
+
+  useEffect(() => {
+    if (!open) return;
+
+    reset({
+      name: property?.name ?? "",
+      street: property?.address.street ?? "",
+      city: property?.address.city ?? "",
+      unitCount: property?.unitCount,
+      description: property?.description ?? "",
+    });
+  }, [open, property, reset]);
 
   useEffect(() => {
     return () => {
@@ -41,22 +76,6 @@ export function AddPropertyModal({
       }
     };
   }, []);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<AddPropertyFormInput, unknown, AddPropertySubmitValues>({
-    resolver: zodResolver(addPropertySchema),
-    defaultValues: {
-      propertyName: "",
-      city: "",
-      propertyAddress: "",
-      unitCount: undefined,
-      description: "",
-    },
-  });
 
   const closeModal = () => {
     reset();
@@ -68,11 +87,8 @@ export function AddPropertyModal({
 
     setImage(null);
     setImagePreviewUrl(null);
+    setImageRemoved(false);
     onOpenChange(false);
-  };
-
-  const submitForm = async (values: AddPropertySubmitValues) => {
-    await onSubmit?.({ ...values, image });
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +105,7 @@ export function AddPropertyModal({
     previewUrlRef.current = nextPreviewUrl;
     setImage(selectedImage);
     setImagePreviewUrl(nextPreviewUrl);
+    setImageRemoved(false);
   };
 
   const removeImage = () => {
@@ -99,11 +116,61 @@ export function AddPropertyModal({
 
     setImage(null);
     setImagePreviewUrl(null);
+    setImageRemoved(true);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
+
+  const submitForm = async (values: PropertyFormFields) => {
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append(
+      "address",
+      JSON.stringify({
+        street: values.street,
+        city: values.city,
+      }),
+    );
+    formData.append("unitCount", String(values.unitCount));
+
+    if (values.description) {
+      formData.append("description", values.description);
+    }
+
+    if (image) {
+      formData.append("image", image);
+    }
+
+    try {
+      const savedProperty = property
+        ? await updateProperty.mutateAsync({
+            id: property.id,
+            formData,
+          })
+        : await createProperty.mutateAsync(formData);
+
+      toast.success(
+        property
+          ? "Property has been updated successfully."
+          : "Property has been added successfully.",
+      );
+      onOpenChange(false);
+      onSuccess?.(savedProperty);
+    } catch {
+      toast.error(
+        property
+          ? "We could not update the property. Please try again."
+          : "We could not add the property. Please try again.",
+      );
+    }
+  };
+
+  const isMutationPending =
+    isSubmitting || createProperty.isPending || updateProperty.isPending;
+  const previewImage =
+    imagePreviewUrl ?? (!imageRemoved ? (property?.image ?? null) : null);
 
   return (
     <Modal
@@ -118,7 +185,7 @@ export function AddPropertyModal({
       }}
       title={
         <span className="text-[24px] font-normal text-[#102A2E]">
-          Add property
+          {property ? "Update property" : "Add property"}
         </span>
       }
       className="max-h-[95vh] overflow-y-auto p-5 sm:px-8 sm:py-5"
@@ -128,16 +195,16 @@ export function AddPropertyModal({
           label="Property name"
           required
           placeholder="name"
-          error={errors.propertyName?.message}
+          error={errors.name?.message}
           showErrorMessage={false}
-          {...register("propertyName")}
+          {...register("name")}
         />
 
         <div className="grid grid-cols-[132px_1fr] gap-4">
           <TextInput
             label="City"
             required
-            placeholder="12 Gregory road..."
+            placeholder="Lagos"
             error={errors.city?.message}
             showErrorMessage={false}
             {...register("city")}
@@ -147,9 +214,9 @@ export function AddPropertyModal({
             label="Property address"
             required
             placeholder="12 Gregory road..."
-            error={errors.propertyAddress?.message}
+            error={errors.street?.message}
             showErrorMessage={false}
-            {...register("propertyAddress")}
+            {...register("street")}
           />
         </div>
 
@@ -175,30 +242,28 @@ export function AddPropertyModal({
         <div
           className={cn(
             "flex h-40 flex-col items-center justify-center rounded-lg border border-dashed border-[#C8CED0] text-center",
-            imagePreviewUrl && "border-[#0DD97D]",
+            previewImage && "border-[#0DD97D]",
           )}
         >
-          {imagePreviewUrl ? (
-            <>
-              <div className="mb-1 flex flex-col items-center">
-                <SuccessIcon className="h-12 w-12" aria-hidden="true" />
-                <div className="relative">
-                  <img
-                    src={imagePreviewUrl}
-                    alt="Selected property"
-                    className="h-18 w-24 rounded-lg object-cover"
-                  />
-                  <button
-                    type="button"
-                    aria-label="Remove selected image"
-                    className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-400 text-white shadow-sm transition-colors hover:bg-red-500"
-                    onClick={removeImage}
-                  >
-                    <X className="h-3 w-3" strokeWidth={2.5} />
-                  </button>
-                </div>
+          {previewImage ? (
+            <div className="mb-1 flex flex-col items-center">
+              <SuccessIcon className="h-12 w-12" aria-hidden="true" />
+              <div className="relative">
+                <img
+                  src={previewImage}
+                  alt="Selected property"
+                  className="h-18 w-24 rounded-lg object-cover"
+                />
+                <button
+                  type="button"
+                  aria-label="Remove selected image"
+                  className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-400 text-white shadow-sm transition-colors hover:bg-red-500"
+                  onClick={removeImage}
+                >
+                  <X className="h-3 w-3" strokeWidth={2.5} />
+                </button>
               </div>
-            </>
+            </div>
           ) : (
             <ImagePlus
               className="mb-2 h-5 w-5 text-[#667085]"
@@ -206,7 +271,7 @@ export function AddPropertyModal({
             />
           )}
 
-          {!imagePreviewUrl && (
+          {!previewImage && (
             <p className="mb-3 text-xs text-[#667085]">
               Drop your image here or
             </p>
@@ -215,12 +280,12 @@ export function AddPropertyModal({
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             className="hidden"
             onChange={handleImageChange}
           />
 
-          {!imagePreviewUrl && (
+          {!previewImage && (
             <Button
               type="button"
               variant="ghost"
@@ -246,17 +311,16 @@ export function AddPropertyModal({
           </Button>
           <Button
             type="submit"
-            variant="primary"
             size="md"
-            isLoading={isSubmitting}
-            className="min-w-[162px]  hover:bg-[#156B78]"
+            isLoading={isMutationPending}
+            className="min-w-[162px] hover:bg-[#156B78]"
           >
-            Save property
+            {property ? "Update property" : "Save property"}
           </Button>
         </div>
       </form>
     </Modal>
   );
-}
+};
 
 export default AddPropertyModal;
