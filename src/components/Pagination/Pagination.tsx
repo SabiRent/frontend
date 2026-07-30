@@ -5,6 +5,7 @@ interface PaginationProps {
   totalPages: number;
   total: number;
   limit: number;
+  itemLabel?: string;
   onPageChange: (page: number) => void;
 }
 
@@ -13,6 +14,7 @@ const Pagination = ({
   totalPages,
   total,
   limit,
+  itemLabel = "properties",
   onPageChange,
 }: PaginationProps) => {
   const firstItem = total === 0 ? 0 : (page - 1) * limit + 1;
@@ -22,7 +24,7 @@ const Pagination = ({
     <div className="mt-6 flex items-center justify-between">
       {/* Left */}
       <p className="text-sm text-[#667085]">
-        Showing {firstItem} to {lastItem} of {total} properties
+        Showing {firstItem} to {lastItem} of {total} {itemLabel}
       </p>
 
       {/* Right */}

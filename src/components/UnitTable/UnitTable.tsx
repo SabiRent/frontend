@@ -1,65 +1,11 @@
+import type { Unit } from "@/services/api/types";
 import UnitRow from "../UnitRow/UnitRow";
 
-const units = [
-  {
-    unitName: "Unit 1 A",
-    property: "Prince & Princess",
-    status: "Occupied",
-    tenant: "Ndubuisi Eze",
-    rent: "₦500,000 / y",
-  },
-  {
-    unitName: "Unit 2 B",
-    property: "Sunshine Apartments",
-    status: "Active",
-    tenant: "Okoro Mgbachi",
-    rent: "₦500,000 / y",
-  },
-  {
-    unitName: "Flat 2",
-    property: "Peace Estate",
-    status: "Occupied",
-    tenant: "Emmanuel Arinze",
-    rent: "₦500,000 / y",
-  },
-  {
-    unitName: "Block C",
-    property: "Hillcrest Apartments",
-    status: "Occupied",
-    tenant: "Paschal Anorue",
-    rent: "₦500,000 / y",
-  },
-  {
-    unitName: "Flat 2",
-    property: "Cedar Court",
-    status: "Occupied",
-    tenant: "Lillian Anayo",
-    rent: "₦500,000 / y",
-  },
-  {
-    unitName: "Block A",
-    property: "Maple Heights",
-    status: "Occupied",
-    tenant: "Judith Unanka",
-    rent: "₦500,000 / y",
-  },
-  {
-    unitName: "Unit B",
-    property: "Emerald Court",
-    status: "Occupied",
-    tenant: "Kingsley Aham",
-    rent: "₦500,000 / y",
-  },
-  {
-    unitName: "Block 4",
-    property: "BluCabana",
-    status: "Vacant",
-    tenant: "",
-    rent: "₦500,000 / y",
-  },
-] as const;
+interface UnitTableProps {
+  units: Unit[];
+}
 
-const UnitTable = () => {
+const UnitTable = ({ units }: UnitTableProps) => {
   return (
     <div className="rounded-lg bg-white px-4 py-1 shadow-sm">
       {/* Header */}
@@ -79,14 +25,7 @@ const UnitTable = () => {
 
       <div>
         {units.map((unit) => (
-          <UnitRow
-            key={unit.unitName + unit.property}
-            unitName={unit.unitName}
-            property={unit.property}
-            status={unit.status}
-            tenant={unit.tenant}
-            rent={unit.rent}
-          />
+          <UnitRow key={unit.id} unit={unit} />
         ))}
       </div>
     </div>

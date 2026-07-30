@@ -67,3 +67,33 @@ export interface PropertyListResponse {
   properties: Property[];
   pagination: PropertyPagination;
 }
+
+export type OccupancyStatus = "vacant" | "occupied";
+export type RentInterval = "yearly" | "monthly";
+
+export interface Unit {
+  id: string;
+  property: {
+    id: string;
+    name: string;
+  };
+  name: string;
+  occupancyStatus: OccupancyStatus;
+  rentAmount: number;
+  rentInterval: RentInterval;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UnitPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface UnitListResponse {
+  success: true;
+  units: Unit[];
+  pagination: UnitPagination;
+}
