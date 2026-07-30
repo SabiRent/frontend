@@ -1,9 +1,9 @@
-import { Bell, Plus, SlidersHorizontal, ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Bell, Plus, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 
+import { Button } from "@/components/Button/Button";
 import AddUnitModal from "@/components/forms/AddUnitModal";
 import SearchBar from "@/components/SearchBar/SearchBar";
-import { Button } from "@/components/Button/Button";
 
 interface UnitsToolbarProps {
   search: string;

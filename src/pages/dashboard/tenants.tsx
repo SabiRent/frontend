@@ -11,7 +11,7 @@ const Tenants = () => {
       <h2 className="text-[24px] font-semibold text-[#000000]">Tenant list</h2>
 
       {/* Table */}
-      <div className="-mr-10">
+      <div>
         <TenantTable />
       </div>
     </div>

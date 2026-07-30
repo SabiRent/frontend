@@ -9,12 +9,12 @@ const TenantsToolbar = () => {
   const filters = ["All", "Active", "Inactive", "Pending"];
 
   return (
-    <div className="space-y-6 pt-6 pr-10">
+    <div className="space-y-6 pt-4 sm:pt-6">
       {/* Top Row */}
-      <div className="flex justify-end items-center gap-4">
+      <div className="flex items-center justify-end gap-3 sm:gap-4">
         <Button
           variant="outline"
-          className="h-[48px] w-[163px] rounded-lg border border-[#167589] bg-white text-[#167589] hover:bg-[#F5FCFD]"
+          className="h-11 flex-1 rounded-lg border border-[#167589] bg-white text-[#167589] hover:bg-[#F5FCFD] sm:w-[163px] sm:flex-none"
         >
           <Plus size={18} className="mr-2" />
           Add Tenant
@@ -28,17 +28,17 @@ const TenantsToolbar = () => {
       </div>
 
       {/* Bottom Row */}
-      <div className="flex items-center justify-between">
-        <div className="w-[354px] bg-white rounded-lg  border-[#A8ABAB]">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="w-full rounded-lg border-[#A8ABAB] bg-white sm:w-[354px]">
           <SearchBar placeholder="Search tenant" />
         </div>
 
-        <div className="flex items-center gap-5 ">
+        <div className="flex items-center gap-3 overflow-x-auto pb-1 sm:gap-5">
           {filters.map((filter) => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`h-[40px] rounded-lg px-6 text-sm font-medium transition
+              className={`h-[40px] shrink-0 rounded-lg px-5 text-sm font-medium transition sm:px-6
         ${
           activeFilter === filter
             ? "bg-[#167589] text-white"

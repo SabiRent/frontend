@@ -15,7 +15,7 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   return (
     <div
-      className="relative min-h-screen w-full overflow-hidden bg-cover bg-center flex items-start px-6 pt-24 md:px-16"
+      className="relative flex min-h-screen w-full items-start overflow-y-auto bg-cover bg-center px-4 pb-6 pt-24 sm:px-6 md:px-16"
       style={{
         backgroundImage: `url(${backgroundImageUrl})`,
         justifyContent: cardPosition === "right" ? "flex-end" : "center",

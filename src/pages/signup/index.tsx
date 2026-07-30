@@ -63,7 +63,7 @@ const SignupPage = () => {
       }
       cardPosition="center"
     >
-      <div className="my-5 flex w-full items-center justify-center px-5 py-5 sm:px-12">
+      <div className="my-5 flex w-full items-center justify-center px-0 py-5 sm:px-12">
         <div className="w-full max-w-[520px]">
           <form
             onSubmit={handleSubmit(onSubmit)}

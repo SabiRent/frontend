@@ -20,8 +20,8 @@ const DetailedDashboard = () => {
 
   return (
     <>
-      <div className="mt-4 flex flex-col gap-8 mb-10">
-        <div className="flex justify-between items-center">
+      <div className="mb-10 mt-4 flex flex-col gap-8">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h6 className="font-semibold text-[#111] text-2xl font-heading">
             Dashboard
           </h6>
@@ -29,7 +29,7 @@ const DetailedDashboard = () => {
           <Button
             variant="outline"
             size="lg"
-            className="px-6 mt-4"
+            className="mt-1 w-full px-6 sm:mt-0 sm:w-auto"
             onClick={() => setIsAddPropertyOpen(true)}
           >
             <Plus className="mr-1 h-5 w-5" />
@@ -37,8 +37,8 @@ const DetailedDashboard = () => {
           </Button>
         </div>
 
-        <div className="flex justify-between gap-6 items-center flex-col md:flex-row">
-          <div className="flex items-center gap-4 flex-1 ">
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+          <div className="flex flex-1 items-center gap-4">
             <Avatar
               fullname={user?.fullName}
               src={user?.avatarUrl}
@@ -54,10 +54,10 @@ const DetailedDashboard = () => {
               </p>
             </div>
           </div>
-          <div className="">
+          <div className="w-full md:w-auto">
             <SearchBar
               placeholder="Search"
-              className=" bg-transparent w-md border-2"
+              className="w-full border-2 bg-transparent md:w-md"
             />
           </div>
         </div>

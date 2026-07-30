@@ -9,9 +9,9 @@ interface UnitTableProps {
 
 const UnitTable = ({ units, onEdit, onDelete }: UnitTableProps) => {
   return (
-    <div className="rounded-lg bg-white px-4 py-1 shadow-sm">
+    <div className="overflow-x-auto rounded-lg bg-white px-4 py-1 shadow-sm">
       {/* Header */}
-      <div className="grid grid-cols-[1fr_1.5fr_1.3fr_1.5fr_1.2fr_50px] border-b border-[#EAECF0] py-3 text-[15px] font-semibold text-[#101828]">
+      <div className="grid min-w-[820px] grid-cols-[1fr_1.5fr_1.3fr_1.5fr_1.2fr_50px] border-b border-[#EAECF0] py-3 text-[15px] font-semibold text-[#101828]">
         <p>Unit name</p>
 
         <p>Property</p>
@@ -25,7 +25,7 @@ const UnitTable = ({ units, onEdit, onDelete }: UnitTableProps) => {
         <p></p>
       </div>
 
-      <div>
+      <div className="min-w-[820px]">
         {units.map((unit) => (
           <UnitRow
             key={unit.id}

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ScaleLoader } from "react-spinners";
 
+import AddUnitModal from "@/components/forms/AddUnitModal";
+import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
 import Pagination from "@/components/Pagination/Pagination";
 import UnitsToolbar from "@/components/UnitsToolbar/UnitsToolbar";
 import UnitTable from "@/components/UnitTable/UnitTable";
@@ -9,8 +11,6 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useDeleteUnit } from "@/hooks/useDeleteUnit";
 import { useUnits } from "@/hooks/useUnits";
 import type { Unit } from "@/services/api/types";
-import AddUnitModal from "@/components/forms/AddUnitModal";
-import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
 import { toast } from "sonner";
 
 const Units = () => {

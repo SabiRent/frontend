@@ -59,7 +59,7 @@ const Properties = () => {
   };
 
   return (
-    <div className="space-y-7 pr-10">
+    <div className="space-y-7">
       <PropertiesToolbar
         search={search}
         onSearchChange={(value) => {
