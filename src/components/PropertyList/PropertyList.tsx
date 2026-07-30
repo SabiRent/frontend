@@ -10,10 +10,10 @@ interface PropertyListProps {
 
 const PropertyList = ({ properties, onEdit, onDelete }: PropertyListProps) => {
   return (
-    <div className="w-94% rounded-lg border border-[#D0D5DD] bg-[#FFFFFF] p-6">
+    <div className="overflow-x-auto rounded-lg border border-[#D0D5DD] bg-[#FFFFFF] p-4 sm:p-6">
       {/* Header */}
 
-      <div className="grid grid-cols-[1.6fr_1.3fr_.6fr_.6fr_.6fr_.9fr] pb-5 text-sm font-semibold text-[#000000]">
+      <div className="grid min-w-[860px] grid-cols-[1.6fr_1.3fr_.6fr_.6fr_.6fr_.9fr] pb-5 text-sm font-semibold text-[#000000]">
         <p>Property</p>
         <p>Address</p>
         <p className="text-center">Units</p>
@@ -22,7 +22,7 @@ const PropertyList = ({ properties, onEdit, onDelete }: PropertyListProps) => {
         <p>Actions</p>
       </div>
 
-      <div className="mt-2 space-y-3">
+      <div className="mt-2 min-w-[860px] space-y-3">
         {properties.map((property) => (
           <PropertyRow
             key={property.id}

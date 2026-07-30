@@ -22,7 +22,7 @@ const UpcomingPayment = () => {
         {upcomingPayments.map((payment) => (
           <div
             key={`${payment.tenant}-${payment.property}-${payment.unit}`}
-            className="flex items-center justify-between gap-4 rounded-lg bg-white px-4 py-3 shadow-[0_2px_8px_rgba(255,230,254,0.5)]"
+            className="flex flex-col gap-2 rounded-lg bg-white px-4 py-3 shadow-[0_2px_8px_rgba(255,230,254,0.5)] sm:flex-row sm:items-center sm:justify-between sm:gap-4"
           >
             <div>
               <p className="text-sm font-medium text-[#111111]">
@@ -31,7 +31,7 @@ const UpcomingPayment = () => {
               <p className="mt-1 text-xs text-[#111111]">{payment.dueDate}</p>
             </div>
             <p
-              className={`shrink-0 text-sm font-bold ${payment.highlighted ? "text-[#00CC78]" : "text-[#111111]"}`}
+              className={`self-start text-sm font-bold sm:shrink-0 ${payment.highlighted ? "text-[#00CC78]" : "text-[#111111]"}`}
             >
               {payment.amount}
             </p>

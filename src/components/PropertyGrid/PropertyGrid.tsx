@@ -10,7 +10,7 @@ interface PropertyGridProps {
 
 const PropertyGrid = ({ properties, onEdit, onDelete }: PropertyGridProps) => {
   return (
-    <div className="grid grid-cols-4 gap-x-8 gap-y-7">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-8 2xl:gap-y-7">
       {properties.map((property) => (
         <PropertyCard
           key={property.id}

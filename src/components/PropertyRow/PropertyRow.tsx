@@ -59,7 +59,7 @@ const PropertyRow = ({
 
       <p className="text-center text-sm font-semibold">{vacant}</p>
 
-      <div className="flex gap-6">
+      <div className="flex gap-3 xl:gap-6">
         <CustomTooltip content="Edit property">
           <button
             type="button"

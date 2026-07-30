@@ -30,10 +30,10 @@ const PaymentSummary = () => {
         return (
           <div
             key={item.label}
-            className="flex min-h-28 items-center gap-6 rounded-lg bg-white px-5 py-4 shadow-sm shadow-[#FFE6FE80]"
+            className="flex min-h-28 items-center gap-4 rounded-lg bg-white px-5 py-4 shadow-sm shadow-[#FFE6FE80] sm:gap-6"
           >
             <Icon
-              size={70}
+              size={64}
               strokeWidth={1.2}
               className={`shrink-0 ${item.iconColor}`}
               aria-hidden="true"
@@ -41,7 +41,7 @@ const PaymentSummary = () => {
 
             <div className="space-y-1">
               <p className="text-xs text-[#111111]">{item.label}</p>
-              <p className="text-xl font-bold">{item.amount}</p>
+              <p className="text-lg font-bold sm:text-xl">{item.amount}</p>
             </div>
           </div>
         );
