@@ -64,9 +64,9 @@ export default function TestimonialsSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="h-[810px] w-full max-w-[1440px] bg-gradient-to-b from-[#B7D4DA] via-[#B7D4DA] via-45% to-[rgba(248,251,252,1)] to-50% px-6 py-16 md:px-16">
+    <section className="w-full bg-gradient-to-b from-[#B7D4DA] via-[#B7D4DA] via-45% to-[rgba(248,251,252,1)] to-50% px-4 py-14 sm:px-6 md:px-16 md:py-16">
       {/* Testimonials row */}
-      <div className=" mx-[30px] grid mt-5 max-w-6xl grid-cols-1 items-center gap-10 md:grid-cols-[1fr_1.4fr]">
+      <div className="mx-auto mt-5 grid max-w-6xl grid-cols-1 items-center gap-10 md:grid-cols-[1fr_1.4fr]">
         <div>
           <span className="text-sm font-semibold text-[rgba(255,255,255,1)]">
             What They Say —
@@ -120,19 +120,18 @@ export default function TestimonialsSection() {
       </div>
 
       {/* Steps row */}
-      <div className="mx-auto mt-48 max-w-6xl">
+      <div className="mx-auto mt-16 max-w-6xl md:mt-24 lg:mt-32">
         <h2 className="text-center text-2xl font-bold text-[rgba(16,83,97,1)] md:text-3xl">
           Get Started In 3 Simple Steps!
         </h2>
 
         <div
-          className="mt-8 w-full h-[180px] flex flex-col items-center gap-8 rounded-[20px] border-x border-[#E8B14C] 
-      bg-[rgba(232,241,243,0.2)] px-10 py-10 shadow-sm md:flex-row md:justify-between"
+          className="mt-8 flex w-full flex-col items-stretch gap-6 rounded-[20px] border-x border-[#E8B14C] bg-[rgba(232,241,243,0.2)] px-5 py-8 shadow-sm sm:px-8 md:flex-row md:items-center md:justify-between"
         >
           {STEPS.map((step, index) => (
-            <div key={index} className="flex items-center">
+            <div key={index} className="flex items-center justify-center">
               {/* Step */}
-              <div className="flex w-[220px] items-center gap-4">
+              <div className="flex w-full max-w-[220px] items-center gap-4">
                 <img
                   src={step.icon}
                   alt=""
@@ -162,7 +161,7 @@ export default function TestimonialsSection() {
           <Button
             variant="primary"
             size="md"
-            className="rounded-xl px-8 py-3"
+            className="w-full rounded-xl px-8 py-3 sm:w-auto"
             onClick={() => navigate(AppRoutes.signup)}
           >
             Get the App

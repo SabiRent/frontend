@@ -5,10 +5,10 @@ import { Button } from "@/components/Button/Button";
 
 const UnitsToolbar = () => {
   return (
-    <div className="flex items-center justify-between pt-6 pr-10">
+    <div className="flex flex-col gap-4 pt-4 sm:pt-6 lg:flex-row lg:items-center lg:justify-between">
       {/* Left */}
-      <div className="flex items-center gap-5">
-        <div className="w-[420px]">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 lg:gap-5">
+        <div className="w-full sm:w-[420px]">
           <SearchBar placeholder="Search units by name or address" />
         </div>
         <button className="flex h-10 w-13 items-center justify-center rounded-full border border-[#D0D5DD] bg-white hover:bg-[#F9FAFB]">
@@ -21,10 +21,10 @@ const UnitsToolbar = () => {
       </div>
 
       {/* Right */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <Button
           variant="outline"
-          className="h-[34px] w-[173px] rounded-lg border border-[#167589] bg-white text-[#167589] hover:bg-[#F7FCFD]"
+          className="h-10 flex-1 rounded-lg border border-[#167589] bg-white text-[#167589] hover:bg-[#F7FCFD] sm:w-[173px] sm:flex-none"
         >
           <Plus size={18} className="mr-2" />
           Add Unit

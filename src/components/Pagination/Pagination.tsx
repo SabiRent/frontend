@@ -19,7 +19,7 @@ const Pagination = ({
   const lastItem = Math.min(page * limit, total);
 
   return (
-    <div className="mt-6 flex items-center justify-between">
+    <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       {/* Left */}
       <p className="text-sm text-[#667085]">
         Showing {firstItem} to {lastItem} of {total} properties

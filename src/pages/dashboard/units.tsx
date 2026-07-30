@@ -8,7 +8,7 @@ const Units = () => {
 
       <h2 className="text-[24px] font-semibold text-[#000000]">Total units</h2>
 
-      <div className="-mr-10">
+      <div>
         <UnitTable />
       </div>
     </div>

@@ -6,7 +6,7 @@ import { List, Grid2X2 } from "lucide-react";
 
 const PropertiesHeader = ({ view, setView }: PropertiesHeaderProps) => {
   return (
-    <div className="flex items-start justify-between pt-6">
+    <div className="flex items-start justify-between gap-4 pt-2 sm:pt-6">
       <h2 className="text-[20px] font-semibold text-[#031316]">
         Properties added
       </h2>

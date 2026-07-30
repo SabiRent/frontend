@@ -258,7 +258,7 @@ const Notification = () => {
                     <button
                       key={item.id}
                       type="button"
-                      className="grid w-full grid-cols-[44px_1fr_auto] items-center gap-4 rounded-xl px-2 py-4 text-left transition hover:bg-[#F8FAFC]"
+                      className="grid w-full grid-cols-[44px_1fr] gap-4 rounded-xl px-2 py-4 text-left transition hover:bg-[#F8FAFC] sm:grid-cols-[44px_1fr_auto] sm:items-center"
                       onClick={() => markOneAsRead(item.id)}
                     >
                       <span
@@ -279,7 +279,7 @@ const Notification = () => {
                         </span>
                       </span>
 
-                      <span className="flex items-center gap-2 self-start whitespace-nowrap pt-1 text-sm font-semibold text-[#344054]">
+                      <span className="col-start-2 flex items-center gap-2 self-start whitespace-nowrap pt-1 text-sm font-semibold text-[#344054] sm:col-start-auto">
                         {item.time}
                         {isUnread && (
                           <span className="size-2 rounded-full bg-[#167589]" />

@@ -48,8 +48,8 @@ const PAIN_POINTS = [
 
 export default function PainPointsBar() {
   return (
-    <div className="mx-auto -mt-35 max-w-7xl px-6 mb-17">
-      <div className="grid grid-cols-1 gap-6 rounded-3xl border border-[rgba(0,0,0,0.25)] bg-white px-8 py-6 shadow-[0_0_15px_rgba(0,0,0,0.06),0_30px_10px_-25px_rgba(0,0,0,0.15)] sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mx-auto mb-12 max-w-7xl px-4 sm:px-6 lg:-mt-8">
+      <div className="grid grid-cols-1 gap-5 rounded-3xl border border-[rgba(0,0,0,0.25)] bg-white px-5 py-6 shadow-[0_0_15px_rgba(0,0,0,0.06),0_30px_10px_-25px_rgba(0,0,0,0.15)] sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
         {PAIN_POINTS.map((point, index) => (
           <div
             key={index}

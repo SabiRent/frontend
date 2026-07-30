@@ -85,10 +85,10 @@ const tenants = [
 
 const TenantTable = () => {
   return (
-    <div className="rounded-lg bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
       {/* Header */}
 
-      <div className="grid grid-cols-[1.6fr_1.6fr_1.6fr_1fr_1fr_1fr] border-b border-[#EAECF0] px-5 py-4 text-[15px] font-semibold text-[#031316]">
+      <div className="grid min-w-[920px] grid-cols-[1.6fr_1.6fr_1.6fr_1fr_1fr_1fr] border-b border-[#EAECF0] px-5 py-4 text-[15px] font-semibold text-[#031316]">
         <p>Tenant</p>
 
         <p>Contact</p>
@@ -104,9 +104,11 @@ const TenantTable = () => {
 
       {/* Rows */}
 
-      {tenants.map((tenant) => (
-        <TenantRow key={tenant.name} {...tenant} />
-      ))}
+      <div className="min-w-[920px]">
+        {tenants.map((tenant) => (
+          <TenantRow key={tenant.name} {...tenant} />
+        ))}
+      </div>
     </div>
   );
 };
