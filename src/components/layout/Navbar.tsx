@@ -14,8 +14,8 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <header className=" relative z-50 relative w-full bg-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-18 py-4">
+    <header className="relative z-50 w-full bg-white">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-18">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src={logo} alt="MyCompound" className="h-6" />
@@ -35,9 +35,9 @@ export default function Navbar() {
         </nav>
 
         {/* Auth actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Button
-            className="h-5 px-8"
+            className="h-9 px-4 sm:px-8"
             variant="outline"
             size="sm"
             onClick={() => navigate(AppRoutes.signup)}
@@ -45,7 +45,7 @@ export default function Navbar() {
             Sign Up
           </Button>
           <Button
-            className="h-5 px-8"
+            className="h-9 px-4 sm:px-8"
             variant="primary"
             size="sm"
             onClick={() => navigate(AppRoutes.login)}

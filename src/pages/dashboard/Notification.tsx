@@ -9,11 +9,7 @@ import {
 import { useMemo, useState } from "react";
 
 type NotificationCategory =
-  | "All"
-  | "Payments"
-  | "Properties"
-  | "Tenants"
-  | "Maintenance";
+  "All" | "Payments" | "Properties" | "Tenants" | "Maintenance";
 
 type NotificationGroup = "Today" | "This Week" | "Earlier";
 
@@ -35,8 +31,7 @@ const notifications: NotificationItem[] = [
     group: "Today",
     title: "Rent Payment Received",
     property: "Flat 3B - Sunshine Apartments",
-    description:
-      "Chinedu Okafor has paid N850,000 for the annual rent.",
+    description: "Chinedu Okafor has paid N850,000 for the annual rent.",
     time: "10 mins ago",
     unread: true,
   },
@@ -67,8 +62,7 @@ const notifications: NotificationItem[] = [
     group: "This Week",
     title: "New Tenant Added",
     property: "Flat 8C - Emerald Court",
-    description:
-      "A new tenant Daniel Nwaeze has been added to your property.",
+    description: "A new tenant Daniel Nwaeze has been added to your property.",
     time: "Yesterday 4:34PM",
     unread: false,
   },
@@ -152,7 +146,10 @@ const Notification = () => {
   const [activeCategory, setActiveCategory] =
     useState<NotificationCategory>("All");
   const [readIds, setReadIds] = useState<Set<string>>(
-    () => new Set(notifications.filter((item) => !item.unread).map((item) => item.id)),
+    () =>
+      new Set(
+        notifications.filter((item) => !item.unread).map((item) => item.id),
+      ),
   );
 
   const categoryCounts = useMemo(() => {
@@ -244,7 +241,10 @@ const Notification = () => {
           if (!groupNotifications.length) return null;
 
           return (
-            <div key={group} className="border-b border-[#EEF2F5] py-5 last:border-b-0">
+            <div
+              key={group}
+              className="border-b border-[#EEF2F5] py-5 last:border-b-0"
+            >
               <h2 className="mb-4 text-base font-semibold text-[#344054]">
                 {group}
               </h2>
@@ -258,7 +258,7 @@ const Notification = () => {
                     <button
                       key={item.id}
                       type="button"
-                      className="grid w-full grid-cols-[44px_1fr_auto] items-center gap-4 rounded-xl px-2 py-4 text-left transition hover:bg-[#F8FAFC]"
+                      className="grid w-full grid-cols-[44px_1fr] gap-4 rounded-xl px-2 py-4 text-left transition hover:bg-[#F8FAFC] sm:grid-cols-[44px_1fr_auto] sm:items-center"
                       onClick={() => markOneAsRead(item.id)}
                     >
                       <span
@@ -279,7 +279,7 @@ const Notification = () => {
                         </span>
                       </span>
 
-                      <span className="flex items-center gap-2 self-start whitespace-nowrap pt-1 text-sm font-semibold text-[#344054]">
+                      <span className="col-start-2 flex items-center gap-2 self-start whitespace-nowrap pt-1 text-sm font-semibold text-[#344054] sm:col-start-auto">
                         {item.time}
                         {isUnread && (
                           <span className="size-2 rounded-full bg-[#167589]" />

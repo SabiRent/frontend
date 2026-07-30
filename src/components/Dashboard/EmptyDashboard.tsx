@@ -12,15 +12,19 @@ const EmptyDashboard = () => {
 
   return (
     <>
-      <div className="h-screen flex justify-center items-center flex-col gap-8 box-border">
+      <div className="box-border flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center gap-8 py-10">
         <div>
-          <img src={houseImage} alt="house_placeholder" />
+          <img
+            src={houseImage}
+            alt="house_placeholder"
+            className="mx-auto max-h-[260px] w-full max-w-[360px] object-contain"
+          />
         </div>
-        <div className="flex flex-col gap-8 justify-center items-center max-w-xl text-center">
-          <h4 className="font-semibold text-4xl font-heading">
+        <div className="flex max-w-xl flex-col items-center justify-center gap-6 text-center sm:gap-8">
+          <h4 className="font-heading text-3xl font-semibold sm:text-4xl">
             No property yet
           </h4>
-          <p className="text-gray-600 text-lg">
+          <p className="text-base text-gray-600 sm:text-lg">
             Welcome to My Compound. Add your first property to start managing
             units, tenants, and rent.
           </p>
@@ -28,7 +32,7 @@ const EmptyDashboard = () => {
           <Button
             variant="outline"
             size="lg"
-            className="px-6 mt-4"
+            className="mt-2 w-full px-6 sm:mt-4 sm:w-auto"
             onClick={() => setIsAddPropertyOpen(true)}
           >
             <Plus className="mr-1 h-5 w-5" />

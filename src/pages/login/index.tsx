@@ -78,8 +78,8 @@ const LoginPage = () => {
       }
       cardPosition="center"
     >
-      <div className="flex max-h-screen w-full items-center justify-center px-5 py-5 sm:px-12">
-        <div className="max-h-[calc(100vh-2.5rem)] w-full max-w-[455px] overflow-y-auto">
+      <div className="flex w-full items-center justify-center px-0 py-5 sm:px-12">
+        <div className="w-full max-w-[455px]">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="w-full rounded-2xl bg-[#F8FAFC] px-6 py-8 shadow-[0_28px_70px_rgba(0,0,0,0.26)] sm:min-h-[510px] sm:px-10 sm:py-11"

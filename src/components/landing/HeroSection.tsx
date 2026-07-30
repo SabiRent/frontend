@@ -3,23 +3,23 @@ import buildingOne from "@/assets/images/hero/building-1.svg";
 import buildingTwo from "@/assets/images/hero/building-2.svg";
 import dashboardLaptop from "@/assets/images/hero/dashboard-laptop.svg";
 import { Button } from "@/components/Button/Button";
-import { useNavigate } from "react-router";
 import { AppRoutes } from "@/constants/routes";
+import { useNavigate } from "react-router";
 
 export default function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative top-[-70px] max-w-[1440px] overflow-hidden bg-surface-mint">
-      <div className="mx-auto grid max-w-[1279px] grid-cols-1 gap-12 px-6 py-16 md:grid-cols-2 md:py-24 lg:px-15 lg:py-32">
+    <section className="relative overflow-hidden bg-surface-mint">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 md:py-20 lg:px-18 lg:py-28">
         {/* Left: copy */}
         <div className="flex flex-col justify-center gap-1 md:gap-4">
-          <span className="mb-4 text-sm font-semibold text-[rgb(22,117,137)]">
+          <span className="mb-3 text-sm font-semibold text-[rgb(22,117,137)]">
             🏠 Property Management —
           </span>
 
-          <h1 className="text-4xl font-semibold text-ink md:text-5xl">
-            <span className="font-extrabold">Every Property</span>
+          <h1 className="text-4xl font-bold leading-tight text-ink sm:text-5xl">
+            Every Property
             <br />
             Has a Story
             <br />
@@ -28,7 +28,7 @@ export default function HeroSection() {
             With Confidence
           </h1>
 
-          <p className="mt-1 -mr-8 max-w-xl text-[12px] font-semibold text-[rgba(90,92,94,1)]">
+          <p className="mt-5 max-w-md text-sm font-light leading-6 text-ink-muted sm:text-base">
             Managing rental properties shouldn't mean juggling notebooks,
             spreadsheets, and <br />
             endless chat history. MyCompound brings everything together in one
@@ -70,13 +70,13 @@ export default function HeroSection() {
             <img
               src={buildingTwo}
               alt="Apartment building exterior"
-              className="mt-0 h-84 w-68 rounded-3xl object-cover"
+              className="h-auto min-w-0 flex-1 rounded-3xl border-2 border-white object-cover md:h-84"
             />
           </div>
           <img
             src={dashboardLaptop}
             alt="MyCompound dashboard on a laptop"
-            className="relative z-10 h-[186px] w-[600px] max-w-xl rounded-3xl object-cover"
+            className="aspect-[16/6] h-auto w-full max-w-xl rounded-3xl object-cover"
           />
         </div>
       </div>
