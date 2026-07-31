@@ -5,6 +5,7 @@ import Modal from "@/components/Modal/Modal";
 import { TextInput } from "@/components/TextInput/TextInput";
 import { properties } from "@/data";
 import { useUpdateProfile } from "@/hooks/useUpdateProfile";
+import { useUploadUserAvatar } from "@/hooks/useUploadUserAvatar";
 import { useAuthStore } from "@/stores/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -96,10 +97,12 @@ const Profile = () => {
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
   const updateProfile = useUpdateProfile();
+  const uploadUserAvatar = useUploadUserAvatar();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [avatarDraft, setAvatarDraft] = useState<string | null>(
     user?.avatarUrl ?? null,
   );
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fullName = user?.fullName || "Raymond Agu";
   const email = user?.email || "raymondagu@gmail.com";
@@ -121,6 +124,7 @@ const Profile = () => {
       fullName,
     });
     setAvatarDraft(user?.avatarUrl ?? null);
+    setAvatarFile(null);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -150,6 +154,8 @@ const Profile = () => {
 
     const reader = new FileReader();
 
+    setAvatarFile(file);
+
     reader.onload = () => {
       setAvatarDraft(typeof reader.result === "string" ? reader.result : null);
     };
@@ -163,6 +169,7 @@ const Profile = () => {
 
   const removeAvatarDraft = () => {
     setAvatarDraft(null);
+    setAvatarFile(null);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -182,10 +189,11 @@ const Profile = () => {
         fullName: nextFullName,
       });
 
-      setUser({
-        ...response.data,
-        avatarUrl: avatarDraft,
-      });
+      const updatedUser = avatarFile
+        ? await uploadUserAvatar.mutateAsync(avatarFile)
+        : response.data;
+
+      setUser(updatedUser);
       toast.success("Profile updated successfully");
       setIsEditOpen(false);
     } catch (error) {
@@ -194,6 +202,8 @@ const Profile = () => {
       toast.error(message);
     }
   };
+
+  const isSavingProfile = updateProfile.isPending || uploadUserAvatar.isPending;
 
   return (
     <div className="mx-auto w-full max-w-[1120px] space-y-6 pb-8">
@@ -230,9 +240,7 @@ const Profile = () => {
             <h2 className="text-2xl font-semibold text-[#111827]">
               {fullName}
             </h2>
-            <p className="mt-1 text-sm text-[#667085]">
-              Landlord
-            </p>
+            <p className="mt-1 text-sm text-[#667085]">Landlord</p>
             <p className="mt-1 text-sm text-[#98A2B3]">
               {formatJoinDate(user?.createdAt)} · {properties.length} property
               added
@@ -388,14 +396,14 @@ const Profile = () => {
               type="button"
               variant="outline"
               onClick={closeEditProfile}
-              disabled={updateProfile.isPending}
+              disabled={isSavingProfile}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               form="edit-profile-form"
-              isLoading={updateProfile.isPending}
+              isLoading={isSavingProfile}
             >
               Save Changes
             </Button>
@@ -436,7 +444,7 @@ const Profile = () => {
                   variant="outline"
                   size="sm"
                   className="gap-2"
-                  disabled={updateProfile.isPending}
+                  disabled={isSavingProfile}
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <Camera size={15} />
@@ -448,7 +456,7 @@ const Profile = () => {
                     variant="ghost"
                     size="sm"
                     className="gap-2 text-[#B42318] hover:bg-[#FEF3F2]"
-                    disabled={updateProfile.isPending}
+                    disabled={isSavingProfile}
                     onClick={removeAvatarDraft}
                   >
                     <Trash2 size={15} />
