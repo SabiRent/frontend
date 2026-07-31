@@ -1,6 +1,6 @@
 import { ArrowUpDown, Bell, Plus, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 import { Button } from "@/components/Button/Button";
 import AddPropertyModal from "@/components/forms/AddPropertyModal";
@@ -15,6 +15,7 @@ const PropertiesToolbar = ({
   search,
   onSearchChange,
 }: PropertiesToolbarProps) => {
+  const navigate = useNavigate();
   const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false);
 
   return (
@@ -30,9 +31,9 @@ const PropertiesToolbar = ({
         </div>
 
         {/* Toolbar */}
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex items-center gap-6">
-            <div className="w-[420px]">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 lg:gap-6">
+            <div className="w-full sm:w-[420px]">
               <SearchBar
                 placeholder="Search properties by name or address"
                 value={search}
@@ -49,18 +50,21 @@ const PropertiesToolbar = ({
             </button>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <Button
               type="button"
               variant="outline"
-              className="h-[34px] w-[173px] rounded-lg border border-[#167589] bg-white text-[#167589] hover:bg-[#F7FCFD]"
+              className="h-10 flex-1 rounded-lg border border-[#167589] bg-white text-[#167589] hover:bg-[#F7FCFD] sm:w-[173px] sm:flex-none"
               onClick={() => setIsAddPropertyOpen(true)}
             >
               <Plus size={18} className="mr-2" />
               Add Property
             </Button>
 
-            <button className="relative flex h-11 w-11 items-center justify-center rounded-lg border border-[#D0D5DD] bg-white hover:bg-gray-50">
+            <button
+              onClick={() => navigate("/dashboard/notifications")}
+              className="relative flex h-11 w-11 items-center justify-center rounded-lg border border-[#D0D5DD] bg-white hover:bg-gray-50"
+            >
               <Bell size={18} />
 
               <span className="absolute right-3 top-3 h-2.5 w-2 rounded-full bg-red-500" />
@@ -72,10 +76,6 @@ const PropertiesToolbar = ({
       <AddPropertyModal
         open={isAddPropertyOpen}
         onOpenChange={setIsAddPropertyOpen}
-        onSubmit={() => {
-          toast.success("Property details are ready to submit.");
-          setIsAddPropertyOpen(false);
-        }}
       />
     </>
   );

@@ -12,6 +12,7 @@ import PublicRoute from "@/components/routes/PublicRoute";
 
 import Dashboard from "@/pages/dashboard/Dashboard";
 import Payments from "@/pages/dashboard/payments";
+import Profile from "@/pages/dashboard/Profile";
 import Properties from "@/pages/dashboard/properties";
 import Tenants from "@/pages/dashboard/tenants";
 import Units from "@/pages/dashboard/units";
@@ -52,6 +53,7 @@ function App() {
             path={AppRoutes.dashboardNotifications}
             element={<Notification />}
           />
+          <Route path={AppRoutes.dashboardProfile} element={<Profile />} />
         </Route>
       </Route>
 

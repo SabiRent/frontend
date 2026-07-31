@@ -18,9 +18,9 @@ const TenantsToolbar = ({
   const statuses = ["All", "Active", "Inactive", "Pending"];
 
   return (
-    <div className="space-y-6 pt-6 pr-10">
+    <div className="space-y-6 pt-4 sm:pt-6">
       {/* Top Row */}
-      <div className="flex justify-end items-center gap-4">
+      <div className="flex items-center justify-end gap-3 sm:gap-4">
         <Button
           variant="outline"
           onClick={onAddTenant}
@@ -40,8 +40,8 @@ const TenantsToolbar = ({
       </div>
 
       {/* Bottom Row */}
-      <div className="flex items-center justify-between">
-        <div className="w-[354px] bg-white rounded-lg  border-[#A8ABAB]">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="w-full rounded-lg border-[#A8ABAB] bg-white sm:w-[354px]">
           <SearchBar placeholder="Search tenant" />
         </div>
 

@@ -33,6 +33,7 @@ type SidebarProps = {
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [showMenu, setShowMenu] = useState(false);
+  const [showPaymentsMenu, setShowPaymentsMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,8 +63,13 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   };
 
   const navigateAndClose = (route: string) => {
+    setShowPaymentsMenu(false);
     navigate(route);
     onClose();
+  };
+
+  const navigateToPaymentsView = (view: "summary" | "records") => {
+    navigateAndClose(`${AppRoutes.dashboardPayments}?view=${view}`);
   };
 
   return (
@@ -115,12 +121,33 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           onClick={() => navigateAndClose(AppRoutes.dashboardTenants)}
         />
 
-        <SidebarItem
-          label="Payments"
-          icon={<CreditCard size={18} />}
-          active={location.pathname === AppRoutes.dashboardPayments}
-          onClick={() => navigateAndClose(AppRoutes.dashboardPayments)}
-        />
+        <div className="relative">
+          <SidebarItem
+            label="Payments"
+            icon={<CreditCard size={18} />}
+            active={location.pathname === AppRoutes.dashboardPayments}
+            onClick={() => setShowPaymentsMenu((visible) => !visible)}
+          />
+
+          {showPaymentsMenu && (
+            <div className="absolute left-[170px] top-1 z-20 w-[170px] rounded-xl bg-white p-3 shadow-xl shadow-slate-950/20">
+              <button
+                type="button"
+                className="block w-full rounded-lg px-4 py-3 text-left text-base font-medium text-[#56565E] transition hover:bg-[#F4F7FA] hover:text-[#167589]"
+                onClick={() => navigateToPaymentsView("summary")}
+              >
+                Summary
+              </button>
+              <button
+                type="button"
+                className="block w-full rounded-lg px-4 py-3 text-left text-base font-medium text-[#56565E] transition hover:bg-[#F4F7FA] hover:text-[#167589]"
+                onClick={() => navigateToPaymentsView("records")}
+              >
+                Records
+              </button>
+            </div>
+          )}
+        </div>
 
         <SidebarItem
           label="Notifications"
@@ -153,7 +180,13 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
         {showMenu && (
           <div className="absolute bottom-[calc(100%+0.75rem)] left-0 z-10 w-full">
-            <UserProfileDropdown onLogout={handleLogoutClick} />
+            <UserProfileDropdown
+              onNavigate={() => {
+                setShowMenu(false);
+                onClose();
+              }}
+              onLogout={handleLogoutClick}
+            />
           </div>
         )}
       </div>

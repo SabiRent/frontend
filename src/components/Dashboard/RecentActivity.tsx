@@ -20,12 +20,12 @@ const RecentActivity = () => {
         {recentActivities.map((activity, index) => (
           <div
             key={`${activity.activity}-${activity.date}-${index}`}
-            className="flex items-center justify-between gap-4 rounded-lg bg-white px-4 py-3 shadow-[0_2px_8px_rgba(255,230,254,0.5)]"
+            className="flex flex-col gap-2 rounded-lg bg-white px-4 py-3 shadow-[0_2px_8px_rgba(255,230,254,0.5)] sm:flex-row sm:items-center sm:justify-between sm:gap-4"
           >
             <p className="text-sm font-medium text-[#111111]">
               {activity.activity}
             </p>
-            <div className="flex shrink-0 items-center gap-6">
+            <div className="flex flex-wrap items-center gap-3 sm:shrink-0 sm:gap-6">
               {activity.amount && (
                 <p className="text-sm font-bold text-[#00CC78]">
                   {activity.amount}

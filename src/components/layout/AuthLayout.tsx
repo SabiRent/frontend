@@ -20,7 +20,7 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   return (
     <div
-      className="relative min-h-screen w-full bg-no-repeat flex items-center  px-6 md:px-16 overflow-y-auto"
+      className="relative flex min-h-screen w-full items-center overflow-y-auto bg-no-repeat px-4 py-6 sm:px-6 md:px-16"
       style={{
         backgroundImage: `url(${backgroundImageUrl})`,
         backgroundSize: "cover",
