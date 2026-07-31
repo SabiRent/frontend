@@ -3,6 +3,7 @@ import NotificationButton from "@/components/NotificationButton/NotificationButt
 import { Button } from "@/components/Button/Button";
 import Modal from "@/components/Modal/Modal";
 import { TextInput } from "@/components/TextInput/TextInput";
+import avatarImage from "@/assets/images/avatar.png";
 import { properties } from "@/data";
 import { useUpdateProfile } from "@/hooks/useUpdateProfile";
 import { useUploadUserAvatar } from "@/hooks/useUploadUserAvatar";
@@ -13,7 +14,6 @@ import {
   Camera,
   DoorClosed,
   Edit3,
-  MapPin,
   Mail,
   Trash2,
   User,
@@ -34,22 +34,46 @@ const editProfileSchema = z.object({
 
 type EditProfileForm = z.infer<typeof editProfileSchema>;
 
-const cityTotals = properties.reduce<Record<string, number>>((totals, item) => {
-  const city = item.addressLine2.split(",").at(-1)?.trim() || "Unknown";
-  totals[city] = (totals[city] ?? 0) + 1;
-  return totals;
-}, {});
+const topCities = [
+  { city: "Abuja", total: 8 },
+  { city: "Lagos", total: 6 },
+  { city: "Enugu", total: 5 },
+  { city: "Asaba", total: 4 },
+  { city: "PH", total: 4 },
+];
 
-const topCities = Object.entries(cityTotals)
-  .map(([city, total]) => ({ city, total }))
-  .sort((a, b) => b.total - a.total)
-  .slice(0, 5);
+const topProperties = [
+  {
+    name: "Prince & Princess",
+    address: "No 12 Gregory Road, Emene, Enugu",
+  },
+  {
+    name: "Sunshine Apartments",
+    address: "12 Palm Street, Gbagada, Lagos",
+  },
+  {
+    name: "Emerald Court",
+    address: "15 Bank Road Wuse Zone 4, Abuja",
+  },
+];
 
 const totalUnits = properties.reduce((sum, item) => sum + item.units, 0);
 const occupiedUnits = properties.reduce((sum, item) => sum + item.occupied, 0);
 const vacantUnits = properties.reduce((sum, item) => sum + item.vacant, 0);
 
 const stats = [
+  {
+    label: "Total properties",
+    value: properties.length,
+    icon: Building2,
+    className: "bg-[#E7EFF8] text-[#173B67]",
+  },
+  {
+    label: "Total units",
+    value: totalUnits,
+    icon: DoorClosed,
+    className: "bg-[#FFF3D6] text-[#C58A12]",
+  },
   {
     label: "Total tenants",
     value: occupiedUnits,
@@ -67,18 +91,6 @@ const stats = [
     value: vacantUnits,
     icon: DoorClosed,
     className: "bg-[#FFE3E3] text-[#E5484D]",
-  },
-  {
-    label: "Total properties",
-    value: properties.length,
-    icon: Building2,
-    className: "bg-[#E7EFF8] text-[#173B67]",
-  },
-  {
-    label: "Total units",
-    value: totalUnits,
-    icon: DoorClosed,
-    className: "bg-[#FFF3D6] text-[#C58A12]",
   },
 ];
 
@@ -206,144 +218,132 @@ const Profile = () => {
   const isSavingProfile = updateProfile.isPending || uploadUserAvatar.isPending;
 
   return (
-    <div className="mx-auto w-full max-w-[1120px] space-y-6 pb-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-semibold tracking-tight text-[#111827]">
+    <div className="mx-auto w-full max-w-[1050px] space-y-5 pb-8">
+      <div className="flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-4xl font-semibold tracking-tight text-[#031316]">
           Profile
         </h1>
 
-        <div className="flex items-center gap-4">
-          <NotificationButton />
+        <div className="flex items-center justify-end gap-6">
           <Button
             type="button"
             variant="outline"
             size="sm"
-            className="h-10 min-w-[132px] gap-2"
+            className="h-11 min-w-[150px] gap-2 border-[#167589] text-[#167589]"
             onClick={openEditProfile}
           >
-            <Edit3 size={15} />
+            <Edit3 size={16} />
             Edit Profile
           </Button>
+          <NotificationButton />
         </div>
       </div>
 
-      <section className="rounded-2xl border border-[#DDE6EC] bg-white p-5 shadow-sm sm:p-6">
-        <div className="flex flex-col gap-4 border-b border-[#EEF2F5] pb-6 sm:flex-row sm:items-center">
-          <Avatar
-            fullname={fullName}
-            src={user?.avatarUrl}
-            size="xl"
-            className="ring-4 ring-[#EAF3F7]"
-          />
+      <section className="rounded-xl border border-[#C7D1DA] bg-white p-4 shadow-sm sm:p-5">
+        <div className="flex flex-col gap-4 border-b border-[#EEF2F5] px-1 pb-5 sm:flex-row sm:items-center">
+          <div className="relative w-fit">
+            <Avatar
+              fullname={fullName}
+              src={user?.avatarUrl ?? avatarImage}
+              size="xl"
+              className="ring-4 ring-[#EAF3F7]"
+            />
+            <button
+              type="button"
+              aria-label="Edit profile picture"
+              className="absolute bottom-0 right-0 inline-flex size-8 items-center justify-center rounded-full border border-[#167589] bg-white text-[#167589] shadow-sm transition hover:bg-[#EAF6F8]"
+              onClick={openEditProfile}
+            >
+              <Edit3 size={15} />
+            </button>
+          </div>
 
           <div>
-            <h2 className="text-2xl font-semibold text-[#111827]">
+            <h2 className="text-2xl font-semibold text-[#031316]">
               {fullName}
             </h2>
             <p className="mt-1 text-sm text-[#667085]">Landlord</p>
             <p className="mt-1 text-sm text-[#98A2B3]">
-              {formatJoinDate(user?.createdAt)} · {properties.length} property
-              added
+              {formatJoinDate(user?.createdAt)} <span className="mx-3" />
+              {properties.length} property added
             </p>
           </div>
         </div>
 
-        <div className="grid gap-6 py-6 lg:grid-cols-[0.82fr_1.18fr]">
-          <section className="rounded-2xl border border-[#E5EAF0] p-5">
-            <h3 className="text-xl font-medium text-[#111827]">
-              Personal Info
-            </h3>
+        <section className="mt-6 rounded-xl border border-[#E5EAF0] px-4 py-3 shadow-sm">
+          <h3 className="text-2xl font-medium text-[#1F2937]">
+            Personal Info
+          </h3>
 
-            <dl className="mt-5 space-y-6">
-              <div>
-                <dt className="text-sm font-semibold text-[#167589]">Name</dt>
-                <dd className="mt-1 text-sm font-medium text-[#111827]">
-                  {fullName}
-                </dd>
-              </div>
-
-              <div>
-                <dt className="text-sm font-semibold text-[#167589]">Email</dt>
-                <dd className="mt-1 text-sm font-medium text-[#111827]">
-                  {email}
-                </dd>
-              </div>
-            </dl>
-          </section>
-
-          <section className="rounded-2xl border border-[#E5EAF0] p-5">
-            <h3 className="text-xl font-medium text-[#111827]">
-              Portfolio summary
-            </h3>
-
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {stats.slice(0, 3).map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <div
-                    key={item.label}
-                    className="flex items-center gap-3 rounded-xl bg-[#F8FAFC] p-4 shadow-sm"
-                  >
-                    <span
-                      className={`inline-flex size-10 items-center justify-center rounded-lg ${item.className}`}
-                    >
-                      <Icon size={18} />
-                    </span>
-                    <div>
-                      <p className="text-3xl font-medium leading-none text-[#111827]">
-                        {item.value}
-                      </p>
-                      <p className="mt-1 text-xs text-[#667085]">
-                        {item.label}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+          <dl className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-20">
+            <div>
+              <dt className="text-base font-medium text-[#167589]">Name</dt>
+              <dd className="mt-1 text-base font-medium text-[#111827]">
+                {fullName}
+              </dd>
             </div>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {stats.slice(3).map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <div
-                    key={item.label}
-                    className="flex items-center gap-3 rounded-xl bg-[#F8FAFC] p-4 shadow-sm"
-                  >
-                    <span
-                      className={`inline-flex size-10 items-center justify-center rounded-lg ${item.className}`}
-                    >
-                      <Icon size={18} />
-                    </span>
-                    <div>
-                      <p className="text-3xl font-medium leading-none text-[#111827]">
-                        {item.value}
-                      </p>
-                      <p className="mt-1 text-xs text-[#667085]">
-                        {item.label}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="sm:min-w-[260px]">
+              <dt className="text-base font-medium text-[#167589]">Email</dt>
+              <dd className="mt-1 text-base font-medium text-[#111827]">
+                {email}
+              </dd>
             </div>
-          </section>
-        </div>
+          </dl>
+        </section>
 
-        <section className="space-y-4">
+        <section className="mt-7 rounded-xl border border-[#F4D8A7] px-4 py-3 shadow-sm">
+          <h3 className="text-2xl font-medium text-[#667085]">
+            Portfolio summary
+          </h3>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {stats.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <div
+                  key={item.label}
+                  className="flex min-h-[82px] items-center gap-3 rounded-lg bg-white p-3 shadow-sm"
+                >
+                  <span
+                    className={`inline-flex size-11 shrink-0 items-center justify-center rounded-lg ${item.className}`}
+                  >
+                    <Icon size={19} />
+                  </span>
+                  <div>
+                    <p className="text-3xl font-medium leading-none text-[#3C4A4E]">
+                      {item.value}
+                    </p>
+                    <p className="mt-2 text-xs text-[#98A2B3]">
+                      {item.label}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mt-8 space-y-4 px-2">
           <h3 className="text-base font-semibold text-[#111827]">
             Top 5 Cities
           </h3>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {topCities.map((item) => (
-              <div key={item.city} className="rounded-xl bg-[#F8FAFC] p-4">
-                <p className="text-xl font-medium text-[#111827]">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {topCities.map((item, index) => (
+              <div
+                key={item.city}
+                className={`min-h-[72px] rounded-lg border border-[#E5EAF0] bg-white p-3 shadow-sm ${
+                  index < 2 || index >= topCities.length - 2
+                    ? "border-t-2 border-t-[#C9B7BF]"
+                    : "border-t-transparent"
+                }`}
+              >
+                <p className="text-2xl font-medium leading-tight text-[#1F2937]">
                   {item.city}
                 </p>
-                <p className="mt-1 text-xs text-[#667085]">
+                <p className="mt-2 text-xs text-[#667085]">
                   {item.total} {item.total === 1 ? "Property" : "Properties"}
                 </p>
               </div>
@@ -351,25 +351,22 @@ const Profile = () => {
           </div>
         </section>
 
-        <section className="mt-8 space-y-4">
+        <section className="mt-8 space-y-4 rounded-lg bg-white px-2 pb-1">
           <h3 className="text-base font-semibold text-[#111827]">
             Top Properties
           </h3>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            {properties.slice(0, 3).map((property) => (
+          <div className="grid gap-8 md:grid-cols-3">
+            {topProperties.map((property) => (
               <article
                 key={property.name}
-                className="rounded-xl border border-[#AFC8D5] bg-white p-4"
+                className="rounded-lg border border-[#5D97AA] bg-white px-4 py-3"
               >
-                <h4 className="text-lg font-semibold text-[#111827]">
+                <h4 className="text-lg font-semibold leading-tight text-[#111827]">
                   {property.name}
                 </h4>
-                <p className="mt-2 flex items-start gap-2 text-xs text-[#667085]">
-                  <MapPin size={14} className="mt-0.5 shrink-0" />
-                  <span>
-                    {property.addressLine1}, {property.addressLine2}
-                  </span>
+                <p className="mt-2 text-xs text-[#667085]">
+                  {property.address}
                 </p>
               </article>
             ))}

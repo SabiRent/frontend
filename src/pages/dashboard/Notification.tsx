@@ -3,122 +3,34 @@ import {
   CheckCheck,
   CircleDollarSign,
   Home,
+  Trash2,
   UserPlus,
   Wrench,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type KeyboardEvent } from "react";
+import { toast } from "sonner";
 
-type NotificationCategory =
-  "All" | "Payments" | "Properties" | "Tenants" | "Maintenance";
+import {
+  useDeleteNotification,
+  useMarkAllNotificationsAsRead,
+  useMarkNotificationAsRead,
+  useNotifications,
+} from "@/hooks/useNotifications";
+import type {
+  NotificationCategory,
+  NotificationItem,
+} from "@/services/api/notification.service";
+
+type NotificationCategoryFilter =
+  | "All"
+  | "Payments"
+  | "Properties"
+  | "Tenants"
+  | "Maintenance";
 
 type NotificationGroup = "Today" | "This Week" | "Earlier";
 
-interface NotificationItem {
-  id: string;
-  category: Exclude<NotificationCategory, "All">;
-  group: NotificationGroup;
-  title: string;
-  property: string;
-  description: string;
-  time: string;
-  unread: boolean;
-}
-
-const notifications: NotificationItem[] = [
-  {
-    id: "rent-payment-received",
-    category: "Payments",
-    group: "Today",
-    title: "Rent Payment Received",
-    property: "Flat 3B - Sunshine Apartments",
-    description: "Chinedu Okafor has paid N850,000 for the annual rent.",
-    time: "10 mins ago",
-    unread: true,
-  },
-  {
-    id: "maintenance-request",
-    category: "Maintenance",
-    group: "Today",
-    title: "Maintenance Request",
-    property: "Flat 5D - Maple Heights",
-    description:
-      "A new maintenance request for a leaking kitchen sink has been made.",
-    time: "1 hour ago",
-    unread: true,
-  },
-  {
-    id: "rent-due-soon",
-    category: "Payments",
-    group: "Today",
-    title: "Rent Due soon!",
-    property: "Flat 4A - Cedar Court",
-    description: "Mrs Olajide Bunmi's rent is due in 2 weeks.",
-    time: "5 hours ago",
-    unread: true,
-  },
-  {
-    id: "new-tenant-added",
-    category: "Tenants",
-    group: "This Week",
-    title: "New Tenant Added",
-    property: "Flat 8C - Emerald Court",
-    description: "A new tenant Daniel Nwaeze has been added to your property.",
-    time: "Yesterday 4:34PM",
-    unread: false,
-  },
-  {
-    id: "property-update",
-    category: "Properties",
-    group: "This Week",
-    title: "Property Update!",
-    property: "Flat 1D - Hillcrest Apartments",
-    description: "This unit has been marked as vacant.",
-    time: "Yesterday 10:23AM",
-    unread: false,
-  },
-  {
-    id: "rent-overdue",
-    category: "Payments",
-    group: "Earlier",
-    title: "Rent Overdue",
-    property: "Flat 2C - Sunshine Apartments",
-    description: "Rent for this apartment is now overdue.",
-    time: "Jul 22",
-    unread: false,
-  },
-  {
-    id: "property-inspection",
-    category: "Properties",
-    group: "Earlier",
-    title: "Property Inspection Reminder",
-    property: "Peace Estate",
-    description: "Scheduled inspection is coming up this Friday.",
-    time: "Jul 19",
-    unread: false,
-  },
-  {
-    id: "tenant-message",
-    category: "Tenants",
-    group: "Earlier",
-    title: "Tenant Message",
-    property: "Flat 6A - Maple Heights",
-    description: "You have a new message from Amaka Johnson.",
-    time: "Jul 18",
-    unread: false,
-  },
-  {
-    id: "maintenance-completed",
-    category: "Maintenance",
-    group: "Earlier",
-    title: "Maintenance Completed",
-    property: "Flat 5D - Maple Heights",
-    description: "The leaking kitchen sink request has been resolved.",
-    time: "Jul 16",
-    unread: false,
-  },
-];
-
-const categories: NotificationCategory[] = [
+const categories: NotificationCategoryFilter[] = [
   "All",
   "Payments",
   "Properties",
@@ -128,37 +40,138 @@ const categories: NotificationCategory[] = [
 
 const groups: NotificationGroup[] = ["Today", "This Week", "Earlier"];
 
+const apiCategoryByFilter = {
+  Payments: "payments",
+  Properties: "properties",
+  Tenants: "tenants",
+  Maintenance: "maintenance",
+} satisfies Record<Exclude<NotificationCategoryFilter, "All">, NotificationCategory>;
+
+const filterByApiCategory = {
+  payments: "Payments",
+  properties: "Properties",
+  tenants: "Tenants",
+  maintenance: "Maintenance",
+} satisfies Record<NotificationCategory, Exclude<NotificationCategoryFilter, "All">>;
+
 const categoryIcons = {
   Payments: CircleDollarSign,
   Properties: Home,
   Tenants: UserPlus,
   Maintenance: Wrench,
-} satisfies Record<Exclude<NotificationCategory, "All">, typeof Bell>;
+} satisfies Record<Exclude<NotificationCategoryFilter, "All">, typeof Bell>;
 
 const iconStyles = {
   Payments: "bg-[#FFF6D7] text-[#D99A13]",
   Properties: "bg-[#FFECEB] text-[#D95B58]",
   Tenants: "bg-[#E7F3FA] text-[#3685A8]",
   Maintenance: "bg-[#F4F7FA] text-[#64748B]",
-} satisfies Record<Exclude<NotificationCategory, "All">, string>;
+} satisfies Record<Exclude<NotificationCategoryFilter, "All">, string>;
 
-const Notification = () => {
-  const [activeCategory, setActiveCategory] =
-    useState<NotificationCategory>("All");
-  const [readIds, setReadIds] = useState<Set<string>>(
-    () =>
-      new Set(
-        notifications.filter((item) => !item.unread).map((item) => item.id),
-      ),
+const getNotificationGroup = (createdAt: string): NotificationGroup => {
+  const createdDate = new Date(createdAt);
+
+  if (Number.isNaN(createdDate.getTime())) {
+    return "Earlier";
+  }
+
+  const now = new Date();
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+  );
+  const startOfCreatedDate = new Date(
+    createdDate.getFullYear(),
+    createdDate.getMonth(),
+    createdDate.getDate(),
+  );
+  const dayDifference =
+    (startOfToday.getTime() - startOfCreatedDate.getTime()) /
+    (1000 * 60 * 60 * 24);
+
+  if (dayDifference === 0) {
+    return "Today";
+  }
+
+  if (dayDifference <= 7) {
+    return "This Week";
+  }
+
+  return "Earlier";
+};
+
+const formatNotificationTime = (createdAt: string) => {
+  const createdDate = new Date(createdAt);
+
+  if (Number.isNaN(createdDate.getTime())) {
+    return "";
+  }
+
+  const now = new Date();
+  const minutesAgo = Math.max(
+    0,
+    Math.floor((now.getTime() - createdDate.getTime()) / (1000 * 60)),
   );
 
+  if (minutesAgo < 1) {
+    return "Just now";
+  }
+
+  if (minutesAgo < 60) {
+    return `${minutesAgo} min${minutesAgo === 1 ? "" : "s"} ago`;
+  }
+
+  if (minutesAgo < 24 * 60) {
+    const hoursAgo = Math.floor(minutesAgo / 60);
+    return `${hoursAgo} hour${hoursAgo === 1 ? "" : "s"} ago`;
+  }
+
+  if (minutesAgo < 48 * 60) {
+    return `Yesterday ${createdDate.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    })}`;
+  }
+
+  return createdDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+};
+
+const Notification = () => {
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useNotifications({ page: 1, limit: 20 });
+  const markOneAsReadMutation = useMarkNotificationAsRead();
+  const markAllAsReadMutation = useMarkAllNotificationsAsRead();
+  const deleteNotificationMutation = useDeleteNotification();
+
+  const notifications = useMemo(
+    () => data?.notifications ?? [],
+    [data?.notifications],
+  );
+  const unreadNotifications = useMemo(
+    () => notifications.filter((item) => !item.isRead),
+    [notifications],
+  );
+  const [activeCategory, setActiveCategory] =
+    useState<NotificationCategoryFilter>("All");
+
   const categoryCounts = useMemo(() => {
-    return categories.reduce<Record<NotificationCategory, number>>(
+    return categories.reduce<Record<NotificationCategoryFilter, number>>(
       (counts, category) => {
         counts[category] =
           category === "All"
             ? notifications.length
-            : notifications.filter((item) => item.category === category).length;
+            : notifications.filter(
+                (item) => item.category === apiCategoryByFilter[category],
+              ).length;
         return counts;
       },
       {
@@ -169,18 +182,46 @@ const Notification = () => {
         Maintenance: 0,
       },
     );
-  }, []);
+  }, [notifications]);
 
   const visibleNotifications = notifications.filter(
-    (item) => activeCategory === "All" || item.category === activeCategory,
+    (item) =>
+      activeCategory === "All" ||
+      item.category === apiCategoryByFilter[activeCategory],
   );
 
   const markAllAsRead = () => {
-    setReadIds(new Set(notifications.map((item) => item.id)));
+    markAllAsReadMutation.mutate(undefined, {
+      onSuccess: (response) => {
+        toast.success(response.message || "All notifications marked as read.");
+      },
+      onError: () => {
+        toast.error("Unable to mark all notifications as read.");
+      },
+    });
   };
 
-  const markOneAsRead = (id: string) => {
-    setReadIds((current) => new Set(current).add(id));
+  const markOneAsRead = (item: NotificationItem) => {
+    if (item.isRead || markOneAsReadMutation.isPending) {
+      return;
+    }
+
+    markOneAsReadMutation.mutate(item.id, {
+      onError: () => {
+        toast.error("Unable to mark this notification as read.");
+      },
+    });
+  };
+
+  const deleteOneNotification = (item: NotificationItem) => {
+    deleteNotificationMutation.mutate(item.id, {
+      onSuccess: (response) => {
+        toast.success(response.message || "Notification deleted successfully.");
+      },
+      onError: () => {
+        toast.error("Unable to delete this notification.");
+      },
+    });
   };
 
   return (
@@ -192,11 +233,14 @@ const Notification = () => {
 
         <button
           type="button"
-          className="inline-flex items-center gap-2 self-start rounded-lg px-2 py-1 text-sm font-semibold text-[#167589] transition hover:bg-[#EAF6F8]"
+          className="inline-flex items-center gap-2 self-start rounded-lg px-2 py-1 text-sm font-semibold text-[#167589] transition hover:bg-[#EAF6F8] disabled:cursor-not-allowed disabled:opacity-50"
           onClick={markAllAsRead}
+          disabled={
+            !unreadNotifications.length || markAllAsReadMutation.isPending
+          }
         >
           <CheckCheck size={17} />
-          Mark all as read
+          {markAllAsReadMutation.isPending ? "Marking..." : "Mark all as read"}
         </button>
       </div>
 
@@ -233,65 +277,119 @@ const Notification = () => {
       </div>
 
       <section className="rounded-2xl border border-[#E5EAF0] bg-white px-5 py-4 shadow-sm sm:px-7">
-        {groups.map((group) => {
-          const groupNotifications = visibleNotifications.filter(
-            (item) => item.group === group,
-          );
+        {isLoading && (
+          <div className="py-16 text-center text-sm font-medium text-[#667085]">
+            Loading notifications...
+          </div>
+        )}
 
-          if (!groupNotifications.length) return null;
-
-          return (
-            <div
-              key={group}
-              className="border-b border-[#EEF2F5] py-5 last:border-b-0"
+        {isError && (
+          <div className="flex flex-col items-center gap-4 py-16 text-center">
+            <p className="text-sm font-medium text-[#667085]">
+              Unable to load notifications.
+            </p>
+            <button
+              type="button"
+              className="rounded-lg border border-[#167589] px-4 py-2 text-sm font-semibold text-[#167589] transition hover:bg-[#EAF6F8]"
+              onClick={() => void refetch()}
             >
-              <h2 className="mb-4 text-base font-semibold text-[#344054]">
-                {group}
-              </h2>
+              Try again
+            </button>
+          </div>
+        )}
 
-              <div className="space-y-1">
-                {groupNotifications.map((item) => {
-                  const Icon = categoryIcons[item.category];
-                  const isUnread = !readIds.has(item.id);
+        {!isLoading && !isError && !visibleNotifications.length && (
+          <div className="py-16 text-center text-sm font-medium text-[#667085]">
+            {isFetching ? "Refreshing notifications..." : "No notifications yet."}
+          </div>
+        )}
 
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className="grid w-full grid-cols-[44px_1fr] gap-4 rounded-xl px-2 py-4 text-left transition hover:bg-[#F8FAFC] sm:grid-cols-[44px_1fr_auto] sm:items-center"
-                      onClick={() => markOneAsRead(item.id)}
-                    >
-                      <span
-                        className={`inline-flex size-10 items-center justify-center rounded-full ${iconStyles[item.category]}`}
+        {!isLoading &&
+          !isError &&
+          groups.map((group) => {
+            const groupNotifications = visibleNotifications.filter(
+              (item) => getNotificationGroup(item.createdAt) === group,
+            );
+
+            if (!groupNotifications.length) return null;
+
+            return (
+              <div
+                key={group}
+                className="border-b border-[#EEF2F5] py-5 last:border-b-0"
+              >
+                <h2 className="mb-4 text-base font-semibold text-[#344054]">
+                  {group}
+                </h2>
+
+                <div className="space-y-1">
+                  {groupNotifications.map((item) => {
+                    const category = filterByApiCategory[item.category];
+                    const Icon = categoryIcons[category];
+                    const isUnread = !item.isRead;
+
+                    const handleKeyDown = (
+                      event: KeyboardEvent<HTMLDivElement>,
+                    ) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        markOneAsRead(item);
+                      }
+                    };
+
+                    return (
+                      <div
+                        key={item.id}
+                        role="button"
+                        tabIndex={0}
+                        className="grid w-full grid-cols-[44px_1fr] gap-4 rounded-xl px-2 py-4 text-left transition hover:bg-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#167589]/30 sm:grid-cols-[44px_1fr_auto_auto] sm:items-center"
+                        onClick={() => markOneAsRead(item)}
+                        onKeyDown={handleKeyDown}
                       >
-                        <Icon size={18} />
-                      </span>
+                        <span
+                          className={`inline-flex size-10 items-center justify-center rounded-full ${iconStyles[category]}`}
+                        >
+                          <Icon size={18} />
+                        </span>
 
-                      <span className="min-w-0">
-                        <span className="block text-sm font-semibold text-[#111827]">
-                          {item.title}
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-[#111827]">
+                            {item.title}
+                          </span>
+                          <span className="mt-1 block text-sm font-semibold text-[#344054]">
+                            {item.subtitle}
+                          </span>
+                          <span className="mt-1 block text-sm text-[#667085]">
+                            {item.message}
+                          </span>
                         </span>
-                        <span className="mt-1 block text-sm font-semibold text-[#344054]">
-                          {item.property}
-                        </span>
-                        <span className="mt-1 block text-sm text-[#667085]">
-                          {item.description}
-                        </span>
-                      </span>
 
-                      <span className="col-start-2 flex items-center gap-2 self-start whitespace-nowrap pt-1 text-sm font-semibold text-[#344054] sm:col-start-auto">
-                        {item.time}
-                        {isUnread && (
-                          <span className="size-2 rounded-full bg-[#167589]" />
-                        )}
-                      </span>
-                    </button>
-                  );
-                })}
+                        <span className="col-start-2 flex items-center gap-2 self-start whitespace-nowrap pt-1 text-sm font-semibold text-[#344054] sm:col-start-auto">
+                          {formatNotificationTime(item.createdAt)}
+                          {isUnread && (
+                            <span className="size-2 rounded-full bg-[#167589]" />
+                          )}
+                        </span>
+
+                        <button
+                          type="button"
+                          aria-label={`Delete ${item.title}`}
+                          className="col-start-2 inline-flex size-9 items-center justify-center justify-self-start rounded-lg border border-transparent text-[#98A2B3] transition hover:border-[#FEE4E2] hover:bg-[#FEF3F2] hover:text-[#D92D20] disabled:cursor-not-allowed disabled:opacity-50 sm:col-start-auto sm:justify-self-end"
+                          disabled={deleteNotificationMutation.isPending}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            deleteOneNotification(item);
+                          }}
+                        >
+                          <Trash2 size={17} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </section>
     </div>
   );
