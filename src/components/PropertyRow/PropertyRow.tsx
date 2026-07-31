@@ -13,6 +13,7 @@ interface PropertyRowProps {
   vacant: number | string;
   onEdit?: () => void;
   onDelete?: () => void;
+  onAddUnit?: () => void;
 }
 
 const PropertyRow = ({
@@ -26,6 +27,7 @@ const PropertyRow = ({
   vacant,
   onEdit,
   onDelete,
+  onAddUnit,
 }: PropertyRowProps) => {
   return (
     <div className="grid grid-cols-[1.6fr_1.3fr_.6fr_.6fr_.6fr_.9fr] items-center rounded-lg border border-[#D0D5DD] bg-[#FFFFFF] px-5 py-4 shadow-[0px_2px_8px_rgba(16,24,40,0.06)]">
@@ -41,7 +43,7 @@ const PropertyRow = ({
         <div>
           <h3 className="text-[15px] font-bold text-[#000000]">{name}</h3>
           {description && (
-            <p className="text-[13px] text-[#667085]">{description}</p>
+            <p className="text-[13px] text-[#667085] max-w-50">{description}</p>
           )}
         </div>
       </div>
@@ -85,6 +87,7 @@ const PropertyRow = ({
         <CustomTooltip content="Add unit">
           <button
             type="button"
+            onClick={onAddUnit}
             aria-label={`Add unit to ${name}`}
             className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#D0D5DD] text-[#344054] transition-colors hover:border-[#167589] hover:bg-[#F0FAFC] hover:text-[#167589] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#167589]/40"
           >
