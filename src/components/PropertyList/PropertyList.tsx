@@ -6,9 +6,15 @@ interface PropertyListProps {
   properties: Property[];
   onEdit?: (property: Property) => void;
   onDelete?: (property: Property) => void;
+  onAddUnit?: (property: Property) => void;
 }
 
-const PropertyList = ({ properties, onEdit, onDelete }: PropertyListProps) => {
+const PropertyList = ({
+  properties,
+  onEdit,
+  onDelete,
+  onAddUnit,
+}: PropertyListProps) => {
   return (
     <div className="w-94% rounded-lg border border-[#D0D5DD] bg-[#FFFFFF] p-6">
       {/* Header */}
@@ -38,6 +44,7 @@ const PropertyList = ({ properties, onEdit, onDelete }: PropertyListProps) => {
             vacant="—"
             onEdit={() => onEdit?.(property)}
             onDelete={() => onDelete?.(property)}
+            onAddUnit={() => onAddUnit?.(property)}
           />
         ))}
         {properties.length === 0 && (

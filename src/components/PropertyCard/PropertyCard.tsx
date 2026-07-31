@@ -7,6 +7,7 @@ interface PropertyCardProps {
   addressLine2: string;
   onEdit?: () => void;
   onDelete?: () => void;
+  onAddUnit?: () => void;
 }
 import { Pencil, Plus, Trash2 } from "lucide-react";
 
@@ -21,6 +22,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   addressLine2,
   onEdit,
   onDelete,
+  onAddUnit,
 }) => {
   return (
     <div className="relative h-[310px] overflow-hidden rounded-[18px] border border-[#2A91A2] shadow-md">
@@ -49,6 +51,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <CustomTooltip content="Add unit">
           <button
             type="button"
+            onClick={onAddUnit}
             className="flex h-8 items-center rounded-md bg-[#F2F2F2] px-3 text-[11px] font-medium text-[#333333] transition-colors hover:bg-[#F0FAFC] hover:text-[#167589] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#167589]/40"
           >
             <Plus size={12} className="text-[#167589]" />

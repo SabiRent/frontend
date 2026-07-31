@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { ScaleLoader } from "react-spinners";
+import { useNavigate } from "react-router";
 
 import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
 import AddPropertyModal from "@/components/forms/AddPropertyModal";
+import AddUnitModal from "@/components/forms/AddUnitModal";
 import Pagination from "@/components/Pagination/Pagination";
 import PropertiesHeader from "@/components/PropertiesHeader/PropertiesHeader";
 import PropertiesToolbar from "@/components/PropertiesToolbar/PropertiesToolbar";
 import PropertyGrid from "@/components/PropertyGrid/PropertyGrid";
 import PropertyList from "@/components/PropertyList/PropertyList";
 import { DEFAULT_LIMIT } from "@/constants/pagination";
+import { AppRoutes } from "@/constants/routes";
 import { useDeleteProperty } from "@/hooks/useDeleteProperty";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useProperties } from "@/hooks/useProperties";
@@ -16,10 +19,14 @@ import type { Property } from "@/services/api/types";
 import { toast } from "sonner";
 
 const Properties = () => {
+  const navigate = useNavigate();
   const [view, setView] = useState<"list" | "grid">("list");
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [addingUnitProperty, setAddingUnitProperty] = useState<Property | null>(
+    null,
+  );
   const [deletingProperty, setDeletingProperty] = useState<Property | null>(
     null,
   );
@@ -82,12 +89,14 @@ const Properties = () => {
             properties={properties}
             onEdit={setEditingProperty}
             onDelete={handleDelete}
+            onAddUnit={setAddingUnitProperty}
           />
         ) : (
           <PropertyGrid
             properties={properties}
             onEdit={setEditingProperty}
             onDelete={handleDelete}
+            onAddUnit={setAddingUnitProperty}
           />
         ))}
 
@@ -108,9 +117,21 @@ const Properties = () => {
         onSuccess={() => setEditingProperty(null)}
       />
 
+      <AddUnitModal
+        open={Boolean(addingUnitProperty)}
+        initialProperty={addingUnitProperty}
+        onOpenChange={(open) => {
+          if (!open) setAddingUnitProperty(null);
+        }}
+        onSuccess={() => {
+          setAddingUnitProperty(null);
+          navigate(AppRoutes.dashboardUnits);
+        }}
+      />
+
       <ConfirmDeleteModal
         open={Boolean(deletingProperty)}
-        propertyName={deletingProperty?.name ?? ""}
+        itemName={deletingProperty?.name ?? ""}
         isDeleting={deleteProperty.isPending}
         onOpenChange={(open) => {
           if (!open && !deleteProperty.isPending) {

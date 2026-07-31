@@ -6,12 +6,6 @@ export const unitFormSchema = z.object({
   occupancyStatus: z.enum(["vacant", "occupied"], {
     error: "Occupancy status is required",
   }),
-  rentAmount: z.coerce
-    .number({ error: "Rent amount is required" })
-    .min(0, "Rent amount cannot be negative"),
-  rentInterval: z.enum(["yearly", "monthly"], {
-    error: "Rent interval is required",
-  }),
 });
 
 export type UnitFormInput = z.input<typeof unitFormSchema>;

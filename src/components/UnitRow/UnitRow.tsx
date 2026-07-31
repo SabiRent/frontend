@@ -1,15 +1,38 @@
 import { CheckCircle2, MoreVertical } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { Button } from "@/components/Button/Button";
 import type { Unit } from "@/services/api/types";
 
 interface UnitRowProps {
   unit: Unit;
+  onEdit?: (unit: Unit) => void;
+  onDelete?: (unit: Unit) => void;
 }
-const UnitRow = ({ unit }: UnitRowProps) => {
+const UnitRow = ({ unit, onEdit, onDelete }: UnitRowProps) => {
   const [showMenu, setShowMenu] = useState(false);
+  const actionsRef = useRef<HTMLDivElement>(null);
   const isVacant = unit.occupancyStatus === "vacant";
   const status = isVacant ? "Vacant" : "Occupied";
-  const rent = new Intl.NumberFormat("en-NG").format(unit.rentAmount);
+  const hasRent =
+    Number.isFinite(unit.rentAmount) && Boolean(unit.rentInterval);
+  const rent = hasRent
+    ? `₦${new Intl.NumberFormat("en-NG").format(unit.rentAmount)} / ${unit.rentInterval === "yearly" ? "y" : "m"}`
+    : "—";
+
+  useEffect(() => {
+    if (!showMenu) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!actionsRef.current?.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [showMenu]);
 
   return (
     <div className="grid grid-cols-[1fr_1.5fr_1.3fr_1.5fr_1.2fr_50px] items-center border-b border-[#F2F4F7] py-5">
@@ -40,31 +63,54 @@ const UnitRow = ({ unit }: UnitRowProps) => {
         <p className="text-[15px] text-[#667085] font-semibold">Not assigned</p>
       </div>
 
-      <p className="text-[15px] font-semibold text-[#031316]">
-        ₦{rent} / {unit.rentInterval === "yearly" ? "y" : "m"}
-      </p>
+      <p className="text-[15px] font-semibold text-[#031316]">{rent}</p>
 
-      <div className="relative">
-        <button
+      <div ref={actionsRef} className="relative">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
           onClick={() => setShowMenu(!showMenu)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#D0D5DD] hover:bg-[#F9FAFB]"
+          aria-label={`Actions for ${unit.name}`}
+          className=" rounded-lg border-[#D0D5DD] p-0 hover:bg-[#F9FAFB] shrink-0"
         >
           <MoreVertical size={14} className="text-[#667085]" />
-        </button>
+        </Button>
 
         {showMenu && (
           <div className="absolute -left-[180px] top-0 z-20 w-[180px] rounded-xl bg-white shadow-[0_12px_24px_rgba(16,24,40,0.12)] ">
-            <button className="block w-full px-5 py-3 text-left text-sm hover:bg-[#F9FAFB] font-medium text-[#5A5C5E]">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setShowMenu(false)}
+              className="block h-auto w-full justify-start rounded-none px-5 py-3 text-left text-sm font-medium text-[#5A5C5E] hover:bg-[#F9FAFB]"
+            >
               Assign Tenant
-            </button>
+            </Button>
 
-            <button className="block w-full px-5 py-3 text-left text-sm hover:bg-[#F9FAFB] font-medium text-[#5A5C5E]">
+            <Button
+              type="button"
+              onClick={() => {
+                setShowMenu(false);
+                onEdit?.(unit);
+              }}
+              variant="ghost"
+              className="block h-auto w-full justify-start rounded-none px-5 py-3 text-left text-sm font-medium text-[#5A5C5E] hover:bg-[#F9FAFB]"
+            >
               Edit Unit
-            </button>
+            </Button>
 
-            <button className="block w-full px-5 py-3 text-left text-sm text-[#667085] hover:bg-[#F9FAFB] font-medium text-[#5A5C5E]">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                setShowMenu(false);
+                onDelete?.(unit);
+              }}
+              className="block h-auto w-full justify-start rounded-none px-5 py-3 text-left text-sm font-medium text-[#5A5C5E] hover:bg-[#F9FAFB]"
+            >
               Delete Unit
-            </button>
+            </Button>
           </div>
         )}
       </div>

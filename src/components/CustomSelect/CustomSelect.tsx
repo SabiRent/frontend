@@ -1,7 +1,9 @@
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -50,7 +52,7 @@ const CustomSelect = ({
           id={inputId}
           disabled={disabled}
           aria-invalid={Boolean(error)}
-          className={`h-11 w-full rounded-lg bg-white px-3 text-xs text-[#1F2937] ${
+          className={`h-11! w-full rounded-lg bg-white px-3 text-xs text-[#1F2937] ${
             error ? "border-[#E11D48]" : "border-[#AEB5B7]"
           }`}
         >
@@ -60,11 +62,14 @@ const CustomSelect = ({
         </SelectTrigger>
 
         <SelectContent align="start">
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectGroup>
+            <SelectLabel>{label}</SelectLabel>
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
         </SelectContent>
       </Select>
 

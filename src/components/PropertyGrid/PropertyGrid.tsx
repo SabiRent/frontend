@@ -6,9 +6,15 @@ interface PropertyGridProps {
   properties: Property[];
   onEdit?: (property: Property) => void;
   onDelete?: (property: Property) => void;
+  onAddUnit?: (property: Property) => void;
 }
 
-const PropertyGrid = ({ properties, onEdit, onDelete }: PropertyGridProps) => {
+const PropertyGrid = ({
+  properties,
+  onEdit,
+  onDelete,
+  onAddUnit,
+}: PropertyGridProps) => {
   return (
     <div className="grid grid-cols-4 gap-x-8 gap-y-7">
       {properties.map((property) => (
@@ -24,6 +30,7 @@ const PropertyGrid = ({ properties, onEdit, onDelete }: PropertyGridProps) => {
             .join(", ")}
           onEdit={() => onEdit?.(property)}
           onDelete={() => onDelete?.(property)}
+          onAddUnit={() => onAddUnit?.(property)}
         />
       ))}
       {properties.length === 0 && (

@@ -1,11 +1,11 @@
 import { DEFAULT_LIMIT } from "@/constants/pagination";
 import { apiClient } from "@/services/api/client";
 import type {
+  ApiMessageResponse,
   ApiResponse,
   Unit,
   UnitListResponse,
   OccupancyStatus,
-  RentInterval,
 } from "@/services/api/types";
 
 export interface UnitQuery {
@@ -18,8 +18,6 @@ export interface CreateUnitPayload {
   property: string;
   name: string;
   occupancyStatus: OccupancyStatus;
-  rentAmount: number;
-  rentInterval: RentInterval;
 }
 
 export async function fetchUnits(
@@ -40,4 +38,25 @@ export async function createUnit(payload: CreateUnitPayload): Promise<Unit> {
   const { data } = await apiClient.post<ApiResponse<Unit>>("/units", payload);
 
   return data.data;
+}
+
+export async function updateUnit({
+  id,
+  payload,
+}: {
+  id: string;
+  payload: CreateUnitPayload;
+}): Promise<Unit> {
+  const { data } = await apiClient.patch<ApiResponse<Unit>>(
+    `/units/${id}`,
+    payload,
+  );
+
+  return data.data;
+}
+
+export async function deleteUnit(id: string): Promise<ApiMessageResponse> {
+  const { data } = await apiClient.delete<ApiMessageResponse>(`/units/${id}`);
+
+  return data;
 }

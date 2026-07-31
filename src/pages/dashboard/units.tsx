@@ -1,21 +1,44 @@
 import { useState } from "react";
+import { ScaleLoader } from "react-spinners";
 
 import Pagination from "@/components/Pagination/Pagination";
 import UnitsToolbar from "@/components/UnitsToolbar/UnitsToolbar";
 import UnitTable from "@/components/UnitTable/UnitTable";
 import { DEFAULT_LIMIT } from "@/constants/pagination";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useDeleteUnit } from "@/hooks/useDeleteUnit";
 import { useUnits } from "@/hooks/useUnits";
+import type { Unit } from "@/services/api/types";
+import AddUnitModal from "@/components/forms/AddUnitModal";
+import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
+import { toast } from "sonner";
 
 const Units = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
+  const [deletingUnit, setDeletingUnit] = useState<Unit | null>(null);
+  const deleteUnit = useDeleteUnit();
   const debouncedSearch = useDebounce(search.trim());
   const { data, isLoading, isError } = useUnits({
     page,
     limit: DEFAULT_LIMIT,
     ...(debouncedSearch ? { search: debouncedSearch } : {}),
   });
+
+  const confirmDelete = () => {
+    if (!deletingUnit) return;
+
+    deleteUnit.mutate(deletingUnit.id, {
+      onSuccess: (response) => {
+        toast.success(response.message || "Unit has been deleted.");
+        setDeletingUnit(null);
+      },
+      onError: () => {
+        toast.error("We could not delete the unit. Please try again.");
+      },
+    });
+  };
 
   return (
     <div className="space-y-8">
@@ -31,16 +54,22 @@ const Units = () => {
 
       <div className="-mr-10">
         {isLoading && (
-          <p className="py-10 text-center text-sm text-[#667085]">
-            Loading units...
-          </p>
+          <div className="flex justify-center py-10">
+            <ScaleLoader color="#167589" height={40} width={5} />
+          </div>
         )}
         {isError && (
           <p className="py-10 text-center text-sm text-red-600">
             We could not load your units. Please try again.
           </p>
         )}
-        {!isLoading && !isError && <UnitTable units={data?.units ?? []} />}
+        {!isLoading && !isError && (
+          <UnitTable
+            units={data?.units ?? []}
+            onEdit={setEditingUnit}
+            onDelete={setDeletingUnit}
+          />
+        )}
       </div>
 
       <Pagination
@@ -50,6 +79,26 @@ const Units = () => {
         limit={DEFAULT_LIMIT}
         itemLabel="units"
         onPageChange={setPage}
+      />
+
+      <AddUnitModal
+        open={Boolean(editingUnit)}
+        unit={editingUnit}
+        onOpenChange={(open) => {
+          if (!open) setEditingUnit(null);
+        }}
+        onSuccess={() => setEditingUnit(null)}
+      />
+
+      <ConfirmDeleteModal
+        open={Boolean(deletingUnit)}
+        itemName={deletingUnit?.name ?? ""}
+        itemLabel="Unit"
+        isDeleting={deleteUnit.isPending}
+        onOpenChange={(open) => {
+          if (!open && !deleteUnit.isPending) setDeletingUnit(null);
+        }}
+        onConfirm={confirmDelete}
       />
     </div>
   );

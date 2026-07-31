@@ -9,7 +9,8 @@ import Modal from "@/components/Modal/Modal";
 import { TextInput } from "@/components/TextInput/TextInput";
 import { useCreateUnit } from "@/hooks/useCreateUnit";
 import { useProperties } from "@/hooks/useProperties";
-import type { Unit } from "@/services/api/types";
+import { useUpdateUnit } from "@/hooks/useUpdateUnit";
+import type { Property, Unit } from "@/services/api/types";
 import {
   unitFormSchema,
   type UnitFormFields,
@@ -19,11 +20,20 @@ import {
 interface AddUnitModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  unit?: Unit | null;
+  initialProperty?: Property | null;
   onSuccess?: (unit: Unit) => void;
 }
 
-const AddUnitModal = ({ open, onOpenChange, onSuccess }: AddUnitModalProps) => {
+const AddUnitModal = ({
+  open,
+  onOpenChange,
+  unit = null,
+  initialProperty = null,
+  onSuccess,
+}: AddUnitModalProps) => {
   const createUnit = useCreateUnit();
+  const updateUnit = useUpdateUnit();
   const { data: propertyData, isLoading: arePropertiesLoading } = useProperties(
     {
       limit: 100,
@@ -42,32 +52,49 @@ const AddUnitModal = ({ open, onOpenChange, onSuccess }: AddUnitModalProps) => {
       property: "",
       name: "",
       occupancyStatus: undefined,
-      rentAmount: undefined,
-      rentInterval: undefined,
     },
   });
 
   useEffect(() => {
-    if (open) reset();
-  }, [open, reset]);
+    if (!open) return;
+
+    reset({
+      property: unit?.property.id ?? initialProperty?.id ?? "",
+      name: unit?.name ?? "",
+      occupancyStatus: unit?.occupancyStatus,
+    });
+  }, [open, reset, unit, initialProperty]);
 
   const closeModal = () => {
-    if (createUnit.isPending) return;
+    if (isMutationPending) return;
     reset();
     onOpenChange(false);
   };
 
   const submitForm = async (values: UnitFormFields) => {
     try {
-      const unit = await createUnit.mutateAsync(values);
-      toast.success("Unit has been added successfully.");
+      const savedUnit = unit
+        ? await updateUnit.mutateAsync({ id: unit.id, payload: values })
+        : await createUnit.mutateAsync(values);
+
+      toast.success(
+        unit
+          ? "Unit has been updated successfully."
+          : "Unit has been added successfully.",
+      );
       onOpenChange(false);
       reset();
-      onSuccess?.(unit);
+      onSuccess?.(savedUnit);
     } catch {
-      toast.error("We could not add the unit. Please try again.");
+      toast.error(
+        unit
+          ? "We could not update the unit. Please try again."
+          : "We could not add the unit. Please try again.",
+      );
     }
   };
+
+  const isMutationPending = createUnit.isPending || updateUnit.isPending;
 
   const propertyOptions = (propertyData?.properties ?? []).map((property) => ({
     label: property.name,
@@ -86,12 +113,14 @@ const AddUnitModal = ({ open, onOpenChange, onSuccess }: AddUnitModalProps) => {
         onOpenChange(true);
       }}
       title={
-        <span className="text-[24px] font-normal text-[#102A2E]">Add unit</span>
+        <h5 className="text-[24px] font-medium text-[#102A2E]">
+          {unit ? "Edit unit" : "Add unit"}
+        </h5>
       }
       borderRadius="12px"
       className="p-8 sm:p-10"
     >
-      <form onSubmit={handleSubmit(submitForm)} className="space-y-4">
+      <form onSubmit={handleSubmit(submitForm)} className="space-y-5 pt-3">
         <Controller
           name="property"
           control={control}
@@ -106,7 +135,9 @@ const AddUnitModal = ({ open, onOpenChange, onSuccess }: AddUnitModalProps) => {
               onValueChange={field.onChange}
               error={errors.property?.message}
               required
-              disabled={arePropertiesLoading || createUnit.isPending}
+              disabled={
+                arePropertiesLoading || isMutationPending || Boolean(unit)
+              }
             />
           )}
         />
@@ -117,7 +148,7 @@ const AddUnitModal = ({ open, onOpenChange, onSuccess }: AddUnitModalProps) => {
           placeholder="name and number"
           error={errors.name?.message}
           showErrorMessage={false}
-          disabled={createUnit.isPending}
+          disabled={isMutationPending}
           {...register("name")}
         />
 
@@ -136,50 +167,16 @@ const AddUnitModal = ({ open, onOpenChange, onSuccess }: AddUnitModalProps) => {
               onValueChange={field.onChange}
               error={errors.occupancyStatus?.message}
               required
-              disabled={createUnit.isPending}
+              disabled={isMutationPending}
             />
           )}
         />
-
-        <div className="grid grid-cols-2 gap-4">
-          <TextInput
-            label="Rent amount"
-            required
-            type="number"
-            min={0}
-            placeholder="500000"
-            error={errors.rentAmount?.message}
-            showErrorMessage={false}
-            disabled={createUnit.isPending}
-            {...register("rentAmount", { valueAsNumber: true })}
-          />
-
-          <Controller
-            name="rentInterval"
-            control={control}
-            render={({ field }) => (
-              <CustomSelect
-                label="Rent interval"
-                placeholder="Select interval"
-                options={[
-                  { label: "Yearly", value: "yearly" },
-                  { label: "Monthly", value: "monthly" },
-                ]}
-                value={field.value}
-                onValueChange={field.onChange}
-                error={errors.rentInterval?.message}
-                required
-                disabled={createUnit.isPending}
-              />
-            )}
-          />
-        </div>
 
         <div className="flex items-center justify-center gap-6 pt-10">
           <Button
             type="button"
             variant="outline"
-            disabled={createUnit.isPending}
+            disabled={isMutationPending}
             onClick={closeModal}
             className="h-11 w-[110px] rounded-lg"
           >
@@ -188,10 +185,10 @@ const AddUnitModal = ({ open, onOpenChange, onSuccess }: AddUnitModalProps) => {
 
           <Button
             type="submit"
-            isLoading={createUnit.isPending}
+            isLoading={isMutationPending}
             className="h-11 w-[162px] rounded-lg"
           >
-            Save property
+            {unit ? "Update unit" : "Save unit"}
           </Button>
         </div>
       </form>

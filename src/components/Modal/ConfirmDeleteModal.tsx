@@ -1,11 +1,12 @@
 import { AlertCircle } from "lucide-react";
 
+import { Button } from "@/components/Button/Button";
 import Modal from "@/components/Modal/Modal";
-import { Button } from "@/components/ui/button";
 
 interface ConfirmDeleteModalProps {
   open: boolean;
-  propertyName: string;
+  itemName: string;
+  itemLabel?: string;
   isDeleting?: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
@@ -13,7 +14,8 @@ interface ConfirmDeleteModalProps {
 
 const ConfirmDeleteModal = ({
   open,
-  propertyName,
+  itemName,
+  itemLabel = "Property",
   isDeleting = false,
   onOpenChange,
   onConfirm,
@@ -30,17 +32,22 @@ const ConfirmDeleteModal = ({
       <div className="flex flex-col items-center text-center">
         <AlertCircle className="mb-7 h-20 w-20 text-[#E50909]" />
 
-        <h5 className="text-2xl font-bold text-[#031316]">Delete Property</h5>
+        <h5 className="text-2xl font-bold text-[#031316]">
+          Delete {itemLabel}
+        </h5>
 
         <p className="mt-4 text-lg text-[#031316]">
           Are you sure you want to delete
           <br />
-          <span className="text-[#E50909]">“{propertyName}”</span>?
+          <span className="text-[#E50909]">“{itemName}”</span>?
         </p>
 
         <div className="mt-7 w-full max-w-88 rounded-xl bg-[#FCE5E5] px-6 py-5 text-lg leading-7 text-[#031316]">
           <p>This action cannot be undone.</p>
-          <p>All property information will be permanently removed.</p>
+          <p>
+            All {itemLabel.toLowerCase()} information will be permanently
+            removed.
+          </p>
         </div>
 
         <div className="mt-8 flex w-full items-center justify-center gap-12">
@@ -60,7 +67,7 @@ const ConfirmDeleteModal = ({
             onClick={onConfirm}
             className="h-11 w-[182px] rounded-lg bg-[#E50909] text-white hover:bg-[#C80707]"
           >
-            {isDeleting ? "Deleting..." : "Delete Property"}
+            {isDeleting ? "Deleting..." : `Delete ${itemLabel}`}
           </Button>
         </div>
       </div>

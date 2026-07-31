@@ -3,9 +3,11 @@ import UnitRow from "../UnitRow/UnitRow";
 
 interface UnitTableProps {
   units: Unit[];
+  onEdit?: (unit: Unit) => void;
+  onDelete?: (unit: Unit) => void;
 }
 
-const UnitTable = ({ units }: UnitTableProps) => {
+const UnitTable = ({ units, onEdit, onDelete }: UnitTableProps) => {
   return (
     <div className="rounded-lg bg-white px-4 py-1 shadow-sm">
       {/* Header */}
@@ -25,7 +27,12 @@ const UnitTable = ({ units }: UnitTableProps) => {
 
       <div>
         {units.map((unit) => (
-          <UnitRow key={unit.id} unit={unit} />
+          <UnitRow
+            key={unit.id}
+            unit={unit}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
         ))}
       </div>
     </div>
