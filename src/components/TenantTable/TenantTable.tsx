@@ -1,116 +1,41 @@
 import TenantRow from "@/components/TenantRow/TenantRow";
+import type { Tenant } from "@/services/api/types";
 
-const tenants = [
-  {
-    name: "Ndubuisi Eze",
-    phone: "+234 7050456329",
-    email: "raymondagu@gmail.com",
-    property: "Prince & Princess",
-    unit: "Unit 1A",
-    rent: "₦500,000",
-    frequency: "Yearly",
-    nextDue: "July 18, 2027",
-  },
-  {
-    name: "Okoro Mgbachi",
-    phone: "+234 7050456329",
-    email: "raymondagu@gmail.com",
-    property: "Sunshine Apartment",
-    unit: "Unit 1A",
-    rent: "₦500,000",
-    frequency: "Yearly",
-    nextDue: "July 18, 2027",
-  },
-  {
-    name: "Emmanuel Arinze",
-    phone: "+234 7050456329",
-    email: "raymondagu@gmail.com",
-    property: "Peace Estate",
-    unit: "Flat 2",
-    rent: "₦500,000",
-    frequency: "Yearly",
-    nextDue: "July 18, 2027",
-  },
-  {
-    name: "Paschal Anorue",
-    phone: "+234 7050456329",
-    email: "raymondagu@gmail.com",
-    property: "Hillcrest Apartments",
-    unit: "Block C",
-    rent: "₦500,000",
-    frequency: "Yearly",
-    nextDue: "July 18, 2027",
-  },
-  {
-    name: "Lillian Anayo",
-    phone: "+234 7050456329",
-    email: "raymondagu@gmail.com",
-    property: "Cedar Court",
-    unit: "Flat 2",
-    rent: "₦500,000",
-    frequency: "Yearly",
-    nextDue: "July 18, 2027",
-  },
-  {
-    name: "Judith Unanka",
-    phone: "+234 7050456329",
-    email: "raymondagu@gmail.com",
-    property: "Maple Heights",
-    unit: "Unit 1A",
-    rent: "₦500,000",
-    frequency: "Yearly",
-    nextDue: "July 18, 2027",
-  },
-  {
-    name: "Kingsley Aham",
-    phone: "+234 7050456329",
-    email: "raymondagu@gmail.com",
-    property: "Maple Heights",
-    unit: "Unit 1A",
-    rent: "₦500,000",
-    frequency: "Yearly",
-    nextDue: "July 18, 2027",
-  },
-  {
-    name: "Chinonso Eze",
-    phone: "+234 7050456329",
-    email: "raymondagu@gmail.com",
-    property: "Maple Heights",
-    unit: "Unit 1A",
-    rent: "₦500,000",
-    frequency: "Yearly",
-    nextDue: "July 18, 2027",
-  },
-];
+interface TenantTableProps {
+  tenants: Tenant[];
+  onEdit?: (tenant: Tenant) => void;
+  onDelete?: (tenant: Tenant) => void;
+}
 
-const TenantTable = () => {
-  return (
-    <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
-      {/* Header */}
-
-      <div className="grid min-w-[920px] grid-cols-[1.6fr_1.6fr_1.6fr_1fr_1fr_1fr] border-b border-[#EAECF0] px-5 py-4 text-[15px] font-semibold text-[#031316]">
-        <p>Tenant</p>
-
-        <p>Contact</p>
-
-        <p>Property / Unit</p>
-
-        <p>Rent Amount</p>
-
-        <p>Frequency</p>
-
-        <p>Next Due</p>
-      </div>
-
-      {/* Rows */}
-
-      <div className="min-w-[920px]">
-        {tenants.map((tenant) => (
-          <TenantRow key={tenant.name} {...tenant} />
-        ))}
-      </div>
+const TenantTable = ({ tenants, onEdit, onDelete }: TenantTableProps) => (
+  <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
+    <div className="grid min-w-[1180px] grid-cols-[1.35fr_1.6fr_1.5fr_1fr_1fr_1.2fr_0.8fr_50px] border-b border-[#EAECF0] px-5 py-4 text-[15px] font-semibold text-[#031316]">
+      <p>Tenant</p>
+      <p>Contact</p>
+      <p>Property / Unit</p>
+      <p>Rent Amount</p>
+      <p>Frequency</p>
+      <p>Next Due</p>
+      <p>Status</p>
+      <p />
     </div>
-  );
-};
+    <div className="min-w-[1180px]">
+      {tenants.length > 0 ? (
+        tenants.map((tenant) => (
+          <TenantRow
+            key={tenant.id}
+            tenant={tenant}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        ))
+      ) : (
+        <p className="py-12 text-center text-sm text-[#667085]">
+          No tenants found.
+        </p>
+      )}
+    </div>
+  </div>
+);
 
 export default TenantTable;

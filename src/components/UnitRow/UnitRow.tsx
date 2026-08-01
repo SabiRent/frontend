@@ -8,8 +8,9 @@ interface UnitRowProps {
   unit: Unit;
   onEdit?: (unit: Unit) => void;
   onDelete?: (unit: Unit) => void;
+  onAssignTenant?: (unit: Unit) => void;
 }
-const UnitRow = ({ unit, onEdit, onDelete }: UnitRowProps) => {
+const UnitRow = ({ unit, onEdit, onDelete, onAssignTenant }: UnitRowProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
   const isVacant = unit.occupancyStatus === "vacant";
@@ -82,7 +83,10 @@ const UnitRow = ({ unit, onEdit, onDelete }: UnitRowProps) => {
             <Button
               type="button"
               variant="ghost"
-              onClick={() => setShowMenu(false)}
+              onClick={() => {
+                setShowMenu(false);
+                onAssignTenant?.(unit);
+              }}
               className="block h-auto w-full justify-start rounded-none px-5 py-3 text-left text-sm font-medium text-[#5A5C5E] hover:bg-[#F9FAFB]"
             >
               Assign Tenant

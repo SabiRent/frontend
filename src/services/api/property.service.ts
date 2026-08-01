@@ -5,7 +5,18 @@ import type {
   ApiResponse,
   Property,
   PropertyListResponse,
+  UnitListResponse,
 } from "@/services/api/types";
+
+export async function fetchPropertyUnits(
+  propertyId: string,
+): Promise<UnitListResponse> {
+  const { data } = await apiClient.get<UnitListResponse>(
+    `/properties/${propertyId}/units`,
+  );
+
+  return data;
+}
 
 export interface PropertyQuery {
   page?: number;

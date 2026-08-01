@@ -97,3 +97,34 @@ export interface UnitListResponse {
   units: Unit[];
   pagination: UnitPagination;
 }
+
+export type PaymentFrequency = "yearly" | "quarterly" | "monthly";
+export type TenantStatus = "active" | "inactive" | "pending";
+
+export interface Tenant {
+  id: string;
+  unit: Unit;
+  fullName: string;
+  phone: string;
+  email?: string;
+  rentAmount: number;
+  paymentFrequency: PaymentFrequency;
+  lastPaymentDate: string;
+  nextDueDate: string;
+  status: TenantStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TenantPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface TenantListResponse {
+  success: true;
+  tenants: Tenant[];
+  pagination: TenantPagination;
+}
