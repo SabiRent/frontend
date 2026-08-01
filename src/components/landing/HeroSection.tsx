@@ -1,7 +1,4 @@
 import arrowCircle from "@/assets/icons/arrow-circle.svg";
-import buildingOne from "@/assets/images/hero/building-1.svg";
-import buildingTwo from "@/assets/images/hero/building-2.svg";
-import dashboardLaptop from "@/assets/images/hero/dashboard-laptop.svg";
 import { Button } from "@/components/Button/Button";
 import { AppRoutes } from "@/constants/routes";
 import { useNavigate } from "react-router";
@@ -63,20 +60,23 @@ export default function HeroSection() {
           />
           <div className="relative z-10 flex gap-3">
             <img
-              src={buildingOne}
+              src="/images/building-1.svg"
               alt="Residential property exterior"
               className="mt-15 h-69 w-68 rounded-3xl object-cover"
+              fetchPriority="high"
             />
             <img
-              src={buildingTwo}
+              src="/images/building-2.svg"
               alt="Apartment building exterior"
               className="h-auto min-w-0 flex-1 rounded-3xl border-2 border-white object-cover md:h-84"
+              fetchPriority="high"
             />
           </div>
           <img
-            src={dashboardLaptop}
+            src="/images/dashboard-laptop.svg"
             alt="MyCompound dashboard on a laptop"
             className="aspect-[16/6] h-auto w-full max-w-xl rounded-3xl object-cover"
+            fetchPriority="high"
           />
         </div>
       </div>
