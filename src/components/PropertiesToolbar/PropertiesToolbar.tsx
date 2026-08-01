@@ -1,8 +1,9 @@
-import { ArrowUpDown, Bell, Plus, SlidersHorizontal } from "lucide-react";
+import { ArrowUpDown, Plus, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/Button/Button";
 import AddPropertyModal from "@/components/forms/AddPropertyModal";
+import NotificationButton from "@/components/NotificationButton/NotificationButton";
 import SearchBar from "@/components/SearchBar/SearchBar";
 
 interface PropertiesToolbarProps {
@@ -59,11 +60,7 @@ const PropertiesToolbar = ({
               Add Property
             </Button>
 
-            <button className="relative flex h-11 w-11 items-center justify-center rounded-lg border border-[#D0D5DD] bg-white hover:bg-gray-50">
-              <Bell size={18} />
-
-              <span className="absolute right-3 top-3 h-2.5 w-2 rounded-full bg-red-500" />
-            </button>
+            <NotificationButton />
           </div>
         </div>
       </div>

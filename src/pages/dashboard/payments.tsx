@@ -13,7 +13,13 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import {
+  type FormEvent,
+  type InputHTMLAttributes,
+  type ReactNode,
+  useMemo,
+  useState,
+} from "react";
 import { useSearchParams } from "react-router";
 
 import Modal from "@/components/Modal/Modal";
@@ -32,10 +38,17 @@ interface PaymentRecord {
   frequency: "Yearly" | "Monthly";
   nextDue: string;
   paidDate: string;
+  paymentNote?: string;
   status: PaymentStatus;
 }
 
-const paymentRecords: PaymentRecord[] = [
+interface PaymentFormValues {
+  paymentDate: string;
+  amountPaid: string;
+  note: string;
+}
+
+const initialPaymentRecords: PaymentRecord[] = [
   {
     id: "ndubuisi-eze",
     tenant: "Ndubuisi Eze",
@@ -138,6 +151,50 @@ const currencyFormatter = new Intl.NumberFormat("en-NG", {
 const formatCurrency = (amount: number) => `N${currencyFormatter.format(amount)}`;
 const formatNaira = (amount: number) => `₦${currencyFormatter.format(amount)}`;
 
+const formatPaymentDate = (value: string) => {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return "July 17, 2026";
+  }
+
+  const isoDate = trimmedValue.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const slashDate = trimmedValue.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  const dateParts = isoDate
+    ? {
+        year: Number(isoDate[1]),
+        month: Number(isoDate[2]) - 1,
+        day: Number(isoDate[3]),
+      }
+    : slashDate
+      ? {
+          year: Number(slashDate[3]),
+          month: Number(slashDate[2]) - 1,
+          day: Number(slashDate[1]),
+        }
+      : null;
+
+  if (dateParts) {
+    const date = new Date(dateParts.year, dateParts.month, dateParts.day);
+
+    if (!Number.isNaN(date.getTime())) {
+      return date.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+  }
+
+  return trimmedValue;
+};
+
+const parseCurrencyInput = (value: string, fallback: number) => {
+  const amount = Number(value.replace(/[^\d.]/g, ""));
+
+  return Number.isFinite(amount) && amount > 0 ? amount : fallback;
+};
+
 const statusStyles = {
   Paid: "border-[#A7F3D0] bg-[#ECFDF3] text-[#079455]",
   "Due soon": "border-[#D0D5DD] bg-[#F5F5F5] text-[#667085]",
@@ -151,13 +208,15 @@ const statusIcons = {
 } satisfies Record<PaymentStatus, typeof CheckCircle2>;
 
 const Payments = () => {
+  const [paymentRecords, setPaymentRecords] =
+    useState<PaymentRecord[]>(initialPaymentRecords);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] =
     useState<(typeof statusFilters)[number]>("All");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedTenantHistory, setSelectedTenantHistory] =
     useState<PaymentRecord | null>(null);
-  const [selectedPaymentHistory, setSelectedPaymentHistory] =
+  const [selectedPaymentRecord, setSelectedPaymentRecord] =
     useState<PaymentRecord | null>(null);
   const [searchParams] = useSearchParams();
   const view: PaymentView =
@@ -188,7 +247,28 @@ const Payments = () => {
         const comparison = a.tenant.localeCompare(b.tenant);
         return sortDirection === "asc" ? comparison : -comparison;
       });
-  }, [query, sortDirection, statusFilter, view]);
+  }, [paymentRecords, query, sortDirection, statusFilter, view]);
+
+  const markPaymentAsPaid = (
+    record: PaymentRecord,
+    values: PaymentFormValues,
+  ) => {
+    const paidRecord = {
+      ...record,
+      rentAmount: parseCurrencyInput(values.amountPaid, record.rentAmount),
+      status: "Paid" as const,
+      paidDate: formatPaymentDate(values.paymentDate),
+      paymentNote: values.note.trim() || "Paid through transfer",
+    };
+
+    setPaymentRecords((currentRecords) =>
+      currentRecords.map((item) =>
+        item.id === record.id ? paidRecord : item,
+      ),
+    );
+    setSelectedPaymentRecord(null);
+    setSelectedTenantHistory(paidRecord);
+  };
 
   const tableRecords = filteredRecords;
   const totalGeneratedRent = paymentRecords.reduce(
@@ -323,13 +403,8 @@ const Payments = () => {
         <div className="flex flex-col gap-4 border-b border-[#EEF2F5] px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h1 className="text-3xl font-semibold text-[#031316]">
-              {view === "tracking" ? "Tenant record" : "Payment record"}
+              {view === "tracking" ? "Payment tracking" : "Payment record"}
             </h1>
-            {view === "tracking" && (
-              <p className="mt-2 text-sm text-[#667085]">
-                Track tenant rent status and upcoming due dates.
-              </p>
-            )}
           </div>
 
           {view === "tracking" && <div />}
@@ -339,13 +414,12 @@ const Payments = () => {
           {view === "tracking" ? (
             <TrackingTable
               records={tableRecords}
-              onViewHistory={setSelectedTenantHistory}
+              onMarkAsPaid={setSelectedPaymentRecord}
+              onViewPaidHistory={setSelectedTenantHistory}
+              onViewUnpaidHistory={setSelectedTenantHistory}
             />
           ) : (
-            <HistoryTable
-              records={tableRecords}
-              onViewHistory={setSelectedPaymentHistory}
-            />
+            <HistoryTable records={tableRecords} />
           )}
         </div>
 
@@ -390,19 +464,27 @@ const Payments = () => {
 
       <PaymentHistoryModal
         record={selectedTenantHistory}
+        showMarkAsPaid={Boolean(
+          selectedTenantHistory && selectedTenantHistory.status !== "Paid",
+        )}
         onOpenChange={(open) => {
           if (!open) {
             setSelectedTenantHistory(null);
           }
         }}
+        onMarkAsPaid={(record) => {
+          setSelectedTenantHistory(null);
+          setSelectedPaymentRecord(record);
+        }}
       />
-      <PaymentRecordHistoryModal
-        record={selectedPaymentHistory}
+      <PaymentRecordModal
+        record={selectedPaymentRecord}
         onOpenChange={(open) => {
           if (!open) {
-            setSelectedPaymentHistory(null);
+            setSelectedPaymentRecord(null);
           }
         }}
+        onConfirm={markPaymentAsPaid}
       />
     </div>
   );
@@ -470,10 +552,14 @@ const StatusBadge = ({ status }: { status: PaymentStatus }) => {
 
 const TrackingTable = ({
   records,
-  onViewHistory,
+  onMarkAsPaid,
+  onViewPaidHistory,
+  onViewUnpaidHistory,
 }: {
   records: PaymentRecord[];
-  onViewHistory: (record: PaymentRecord) => void;
+  onMarkAsPaid: (record: PaymentRecord) => void;
+  onViewPaidHistory: (record: PaymentRecord) => void;
+  onViewUnpaidHistory: (record: PaymentRecord) => void;
 }) => (
   <table className="w-full min-w-[1040px] border-collapse">
     <thead>
@@ -484,7 +570,7 @@ const TrackingTable = ({
         <th className="px-5 py-5">Frequency</th>
         <th className="px-5 py-5">Next Due</th>
         <th className="px-5 py-5">Status</th>
-        <th className="px-5 py-5" />
+        <th className="min-w-[170px] px-5 py-5" />
       </tr>
     </thead>
     <tbody>
@@ -513,14 +599,30 @@ const TrackingTable = ({
             <StatusBadge status={record.status} />
           </td>
           <td className="px-5 py-5">
-            <button
-              type="button"
-              className="inline-flex size-9 items-center justify-center rounded-lg border border-[#D0D5DD] text-[#667085] transition hover:bg-[#F8FAFC]"
-              aria-label={`View payment history for ${record.tenant}`}
-              onClick={() => onViewHistory(record)}
-            >
-              <MoreVertical size={18} />
-            </button>
+            <div className="flex items-center justify-end gap-5">
+              {record.status !== "Paid" && (
+                <button
+                  type="button"
+                  className="inline-flex min-h-10 w-[72px] items-center justify-center rounded-lg bg-[#167589] px-3 py-2 text-center text-sm font-semibold leading-tight text-white transition hover:bg-[#126779]"
+                  onClick={() => onMarkAsPaid(record)}
+                >
+                  Mark as Paid
+                </button>
+              )}
+
+              <button
+                type="button"
+                className="inline-flex size-9 items-center justify-center rounded-lg border border-[#D0D5DD] text-[#667085] transition hover:bg-[#F8FAFC]"
+                aria-label={`View payment history for ${record.tenant}`}
+                onClick={() =>
+                  record.status === "Paid"
+                    ? onViewPaidHistory(record)
+                    : onViewUnpaidHistory(record)
+                }
+              >
+                <MoreVertical size={18} />
+              </button>
+            </div>
           </td>
         </tr>
       ))}
@@ -528,13 +630,7 @@ const TrackingTable = ({
   </table>
 );
 
-const HistoryTable = ({
-  records,
-  onViewHistory,
-}: {
-  records: PaymentRecord[];
-  onViewHistory: (record: PaymentRecord) => void;
-}) => (
+const HistoryTable = ({ records }: { records: PaymentRecord[] }) => (
   <table className="w-full min-w-[1040px] border-collapse">
     <thead>
       <tr className="border-b border-[#E5EAF0] text-left text-sm font-semibold text-[#1F2937]">
@@ -550,8 +646,7 @@ const HistoryTable = ({
       {records.map((record) => (
         <tr
           key={record.id}
-          className="cursor-pointer border-b border-[#EEF2F5] transition hover:bg-[#F8FAFC] last:border-0"
-          onClick={() => onViewHistory(record)}
+          className="border-b border-[#EEF2F5] last:border-0"
         >
           <td className="px-5 py-5">
             <TenantCell record={record} />
@@ -583,41 +678,35 @@ const HistoryTable = ({
 
 const PaymentHistoryModal = ({
   record,
+  showMarkAsPaid = false,
   onOpenChange,
+  onMarkAsPaid,
 }: {
   record: PaymentRecord | null;
+  showMarkAsPaid?: boolean;
   onOpenChange: (open: boolean) => void;
+  onMarkAsPaid?: (record: PaymentRecord) => void;
 }) => {
   const paymentLogs = record
-    ? [
-        {
-          id: `${record.id}-latest`,
-          paidDate: record.paidDate,
+    ? Array.from({ length: showMarkAsPaid ? 2 : 3 }, (_, index) => {
+        const defaultMethods = [
+          record.paymentNote || "Paid through transfer",
+          "Paid cash",
+          "Paid through transfer",
+        ];
+
+        return {
+          id: `${record.id}-${index}`,
+          paidDate: index === 0 ? record.paidDate : "July 17, 2026",
           amount: record.rentAmount,
           previousDate: "July 16, 2026",
           nextDate: "August 16, 2027",
-          method: "Paid through transfer",
-          latest: true,
-        },
-        {
-          id: `${record.id}-previous`,
-          paidDate: record.paidDate,
-          amount: record.rentAmount,
-          previousDate: "July 16, 2026",
-          nextDate: "August 16, 2027",
-          method: "Paid cash",
-          latest: false,
-        },
-        {
-          id: `${record.id}-older`,
-          paidDate: record.paidDate,
-          amount: record.rentAmount,
-          previousDate: "July 16, 2026",
-          nextDate: "August 16, 2027",
-          method: "Paid through transfer",
-          latest: false,
-        },
-      ]
+          method: showMarkAsPaid
+            ? "Paid through transfer"
+            : defaultMethods[index],
+          latest: !showMarkAsPaid && index === 0,
+        };
+      })
     : [];
 
   return (
@@ -656,18 +745,33 @@ const PaymentHistoryModal = ({
 
           <div className="mt-9 border-t border-[#DDE3EA] pt-7">
             <div className="grid gap-4 sm:grid-cols-3">
-              <HistoryMetric label="Payment count" value={4} />
+              <HistoryMetric
+                label="Payment count"
+                value={record.status === "Paid" ? 4 : 2}
+              />
               <HistoryMetric
                 label="All payment"
                 value={formatNaira(
-                  record.tenant === "Okoro Mgbachi" ? 700000 : 1000000,
+                  record.status === "Paid" ? 1000000 : 700000,
                 )}
               />
               <HistoryMetric label="Next date" value={record.nextDue} />
             </div>
           </div>
 
-          <section className="mt-10">
+          {showMarkAsPaid && (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                className="h-16 w-full max-w-[690px] rounded-xl bg-[#167589] text-2xl font-semibold text-white transition hover:bg-[#126779]"
+                onClick={() => onMarkAsPaid?.(record)}
+              >
+                Mark as Paid
+              </button>
+            </div>
+          )}
+
+          <section className={showMarkAsPaid ? "mt-12" : "mt-10"}>
             <h3 className="text-xl font-semibold text-[#031316]">
               Payment Log
             </h3>
@@ -736,42 +840,28 @@ const PaymentHistoryModal = ({
   );
 };
 
-const PaymentRecordHistoryModal = ({
+const PaymentRecordModal = ({
   record,
   onOpenChange,
+  onConfirm,
 }: {
   record: PaymentRecord | null;
   onOpenChange: (open: boolean) => void;
+  onConfirm: (record: PaymentRecord, values: PaymentFormValues) => void;
 }) => {
-  const paymentLogs = record
-    ? [
-        {
-          id: `${record.id}-record-latest`,
-          paidDate: record.paidDate,
-          amount: record.rentAmount,
-          previousDate: "July 16, 2026",
-          nextDate: "August 16, 2027",
-          method: "Paid through transfer",
-        },
-        {
-          id: `${record.id}-record-previous`,
-          paidDate: record.paidDate,
-          amount: record.rentAmount,
-          previousDate: "July 16, 2026",
-          nextDate: "August 16, 2027",
-          method: "Paid through transfer",
-        },
-      ]
-    : [];
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  const paymentCount = record?.tenant === "Okoro Mgbachi" ? 2 : 4;
-  const allPayment = record?.tenant === "Okoro Mgbachi" ? 700000 : 1000000;
-  const displayProperty =
-    record?.tenant === "Okoro Mgbachi"
-      ? "Prince & Princess Estate"
-      : record?.property;
-  const displayUnit =
-    record?.tenant === "Okoro Mgbachi" ? "Flat B" : record?.unit;
+    if (!record) return;
+
+    const formData = new FormData(event.currentTarget);
+
+    onConfirm(record, {
+      paymentDate: String(formData.get("paymentDate") ?? ""),
+      amountPaid: String(formData.get("amountPaid") ?? ""),
+      note: String(formData.get("note") ?? ""),
+    });
+  };
 
   return (
     <Modal
@@ -779,104 +869,106 @@ const PaymentRecordHistoryModal = ({
       onOpenChange={onOpenChange}
       width="620px"
       hideCloseButton
-      className="max-h-[calc(100vh-3rem)] overflow-y-auto p-6 sm:p-8"
+      className="p-0"
     >
       {record && (
-        <div>
-          <div className="flex items-start justify-between gap-4">
+        <form
+          className="overflow-hidden rounded-2xl bg-white"
+          onSubmit={handleSubmit}
+        >
+          <div className="flex items-start justify-between gap-4 px-9 py-8">
             <div>
-              <p className="flex items-center gap-3 text-lg font-medium text-[#1F2937]">
-                <ReceiptText size={20} className="text-[#17A867]" />
-                Payment history
+              <p className="flex items-center gap-4 text-2xl font-medium text-[#031316]">
+                <ReceiptText size={24} className="text-[#17A867]" />
+                Payment Record
               </p>
-              <h2 className="mt-4 text-2xl font-semibold leading-tight text-[#031316]">
+              <h2 className="mt-6 text-4xl font-semibold leading-tight text-[#031316]">
                 {record.tenant}
               </h2>
-              <p className="mt-2 text-base text-[#667085]">
-                {displayProperty} - {displayUnit} - {record.frequency}
+              <p className="mt-3 text-2xl text-[#667085]">
+                {record.property} Estate - {record.unit}
               </p>
             </div>
 
             <button
               type="button"
-              aria-label="Close payment history"
-              className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-[#667085] text-[#667085] transition hover:bg-[#F8FAFC]"
+              aria-label="Close payment record"
+              className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-[#667085] text-[#667085] transition hover:bg-[#F8FAFC]"
               onClick={() => onOpenChange(false)}
             >
-              <X size={18} />
+              <X size={24} />
             </button>
           </div>
 
-          <div className="mt-7 border-t border-[#DDE3EA] pt-5">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <HistoryMetric compact label="Payment count" value={paymentCount} />
-              <HistoryMetric
-                compact
-                label="All payment"
-                value={formatNaira(allPayment)}
+          <div className="border-y border-[#DDE3EA] px-9 py-7">
+            <div className="space-y-5">
+              <PaymentFormField
+                label="Date of payment"
+                name="paymentDate"
+                placeholder="dd/mm/yyyy"
+                icon={<CalendarDays size={25} />}
+                required
               />
-              <HistoryMetric compact label="Next date" value={record.nextDue} />
+              <PaymentFormField
+                label="Amount paid"
+                name="amountPaid"
+                placeholder="#500,000"
+                required
+              />
+              <PaymentFormField
+                label="Full rent"
+                name="fullRent"
+                placeholder="#500,000"
+                required
+              />
+              <PaymentFormField
+                label="Note (optional)"
+                name="note"
+                placeholder="Bank deposit etc"
+              />
             </div>
           </div>
 
-          <div className="mt-8 flex justify-center">
+          <div className="flex flex-col-reverse gap-5 px-9 py-9 sm:flex-row sm:justify-between">
             <button
               type="button"
-              className="h-14 w-full max-w-[480px] rounded-lg bg-[#167589] text-xl font-semibold text-white transition hover:bg-[#126779]"
+              className="h-16 min-w-[170px] rounded-xl border-2 border-[#167589] px-7 text-2xl font-semibold text-[#167589] transition hover:bg-[#EAF6F8]"
+              onClick={() => onOpenChange(false)}
             >
-              Mark as Paid
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="h-16 min-w-[285px] rounded-xl bg-[#167589] px-8 text-2xl font-semibold text-white transition hover:bg-[#126779]"
+            >
+              Confirm payment
             </button>
           </div>
-
-          <section className="mt-10">
-            <h3 className="text-xl font-semibold text-[#031316]">
-              Payment Log
-            </h3>
-
-            <div className="relative mt-7 space-y-7 pl-16">
-              <span className="absolute bottom-0 left-[18px] top-0 w-[3px] rounded-full bg-[#17A867]" />
-
-              {paymentLogs.map((item) => (
-                <article key={item.id} className="relative">
-                  <span className="absolute -left-[57px] top-8 z-10 size-5 rounded-full border-4 border-[#173B67] bg-white" />
-
-                  <div className="rounded-2xl border border-transparent bg-white px-5 py-5 shadow-sm">
-                    <p className="text-base text-[#667085]">{item.paidDate}</p>
-                    <p className="mt-2 text-2xl font-bold text-[#031316]">
-                      {formatNaira(item.amount)}
-                    </p>
-
-                    <div className="mt-7 grid grid-cols-2 gap-5">
-                      <div>
-                        <p className="text-base text-[#667085]">
-                          Previous date
-                        </p>
-                        <p className="mt-2 text-xl font-semibold text-[#031316]">
-                          {item.previousDate}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-base text-[#667085]">Next date</p>
-                        <p className="mt-2 text-xl font-semibold text-[#031316]">
-                          {item.nextDate}
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="mt-7 flex items-center gap-3 border-t border-[#DDE3EA] pt-4 text-base text-[#667085]">
-                      <ReceiptText size={18} />
-                      {item.method}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        </div>
+        </form>
       )}
     </Modal>
   );
 };
+
+const PaymentFormField = ({
+  label,
+  icon,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement> & {
+  label: string;
+  icon?: ReactNode;
+}) => (
+  <label className="block">
+    <span className="text-2xl font-medium text-[#031316]">{label}</span>
+    <span className="mt-4 flex h-16 items-center gap-5 rounded-xl border-2 border-[#AEB4B7] px-7 text-[#7B8386]">
+      {icon}
+      <input
+        className="h-full min-w-0 flex-1 bg-transparent text-xl text-[#031316] outline-none placeholder:text-[#C4C8CA]"
+        {...props}
+      />
+    </span>
+  </label>
+);
 
 const HistoryMetric = ({
   label,

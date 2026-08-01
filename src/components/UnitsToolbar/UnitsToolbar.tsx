@@ -1,8 +1,9 @@
-import { ArrowUpDown, Bell, Plus, SlidersHorizontal } from "lucide-react";
+import { ArrowUpDown, Plus, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/Button/Button";
 import AddUnitModal from "@/components/forms/AddUnitModal";
+import NotificationButton from "@/components/NotificationButton/NotificationButton";
 import SearchBar from "@/components/SearchBar/SearchBar";
 
 interface UnitsToolbarProps {
@@ -46,9 +47,7 @@ const UnitsToolbar = ({ search, onSearchChange }: UnitsToolbarProps) => {
             Add Unit
           </Button>
 
-          <button className="relative flex h-11 w-11 items-center justify-center rounded-lg border border-[#D0D5DD] bg-white">
-            <Bell size={18} />
-          </button>
+          <NotificationButton />
         </div>
       </div>
 
