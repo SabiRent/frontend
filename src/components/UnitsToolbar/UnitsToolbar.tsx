@@ -12,6 +12,8 @@ interface UnitsToolbarProps {
 }
 
 const UnitsToolbar = ({ search, onSearchChange }: UnitsToolbarProps) => {
+  const [showFilter, setShowFilter] = useState(false);
+  const [showSort, setShowSort] = useState(false);
   const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
 
   return (
@@ -26,13 +28,83 @@ const UnitsToolbar = ({ search, onSearchChange }: UnitsToolbarProps) => {
               onChange={(event) => onSearchChange(event.target.value)}
             />
           </div>
-          <button className="flex h-10 w-13 items-center justify-center rounded-full border border-[#D0D5DD] bg-white hover:bg-[#F9FAFB]">
-            <SlidersHorizontal size={16} className="text-[#667085]" />
+        <div className="relative">
+          <button
+            onClick={() => {
+              setShowFilter(!showFilter);
+              setShowSort(false);
+            }}
+            className="flex h-10 w-13 items-center justify-center rounded-full border border-[#D0D5DD] bg-white hover:bg-[#F9FAFB]"
+          >
+            <SlidersHorizontal
+              size={16}
+              className="text-[#667085]"
+            />
           </button>
 
-          <button className="flex h-10 w-13 items-center justify-center rounded-full border border-[#D0D5DD] bg-white hover:bg-[#F9FAFB]">
-            <ArrowUpDown size={16} className="text-[#667085]" />
-          </button>
+          {showFilter && (
+            <div className="absolute left-0 top-12 z-50 w-[263px] rounded-xl bg-white py-3 shadow-lg">
+              <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                Property Name
+              </button>
+
+              <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                Occupancy Status
+              </button>
+
+              <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                Tenant Name
+              </button>
+
+              <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                Active
+              </button>
+
+              <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                Inactive
+              </button>
+            </div>
+          )}
+        </div>
+
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowSort(!showSort);
+                setShowFilter(false);
+              }}
+              className="flex h-10 w-13 items-center justify-center rounded-full border border-[#D0D5DD] bg-white hover:bg-[#F9FAFB]"
+            >
+              <ArrowUpDown
+                size={16}
+                className="text-[#667085]"
+              />
+            </button>
+
+            {showSort && (
+              <div className="absolute left-0 top-12 z-50 w-[263px] rounded-xl bg-white py-3 shadow-lg">
+                <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                  Recently Added
+                </button>
+
+                <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                  Property Name (A-Z)
+                </button>
+
+                <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                  Property Name (Z-A)
+                </button>
+
+                <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                  Most Units
+                </button>
+
+                <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
+                  Least Units
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right */}
