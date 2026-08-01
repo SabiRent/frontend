@@ -43,7 +43,7 @@ const UnitsToolbar = ({ search, onSearchChange }: UnitsToolbarProps) => {
           </button>
 
           {showFilter && (
-            <div className="absolute left-0 top-12 z-50 w-[263px] rounded-xl bg-white py-3 shadow-lg">
+            <div className="absolute left-0 top-12 z-50 w-[220px] rounded-xl bg-white py-3 shadow-lg">
               <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
                 Property Name
               </button>
@@ -82,7 +82,7 @@ const UnitsToolbar = ({ search, onSearchChange }: UnitsToolbarProps) => {
             </button>
 
             {showSort && (
-              <div className="absolute left-0 top-12 z-50 w-[263px] rounded-xl bg-white py-3 shadow-lg">
+              <div className="absolute left-0 top-12 z-50 w-[220px] rounded-xl bg-white py-3 shadow-lg">
                 <button className="block w-full px-6 py-3 text-center hover:bg-gray-50 text-[#031316] font-semibold">
                   Recently Added
                 </button>
