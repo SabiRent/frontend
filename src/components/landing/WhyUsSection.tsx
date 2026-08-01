@@ -80,16 +80,19 @@ export default function WhyUsSection() {
               src={buildingBackground}
               alt="Apartment building exterior"
               className="absolute bottom-5 left-[4%] z-0 h-[75%] w-[45%] rounded-3xl object-cover sm:left-[12%] sm:h-[344px] sm:w-[247px]"
+              loading="lazy"
             />
             <img
               src={buildingForeground}
               alt="Apartment building"
               className="absolute bottom-[26%] left-[33%] z-10 h-[75%] w-[45%] rounded-3xl object-cover shadow-lg sm:h-[344px] sm:w-[248px]"
+              loading="lazy"
             />
             <img
               src={tabletPhoto}
               alt="Managing properties on a tablet"
               className="absolute bottom-12 left-[44%] z-20 h-auto w-[55%] max-w-[333px] rounded-3xl"
+              loading="lazy"
             />
           </div>
         </div>

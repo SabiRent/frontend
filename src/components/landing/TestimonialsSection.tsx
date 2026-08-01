@@ -93,6 +93,7 @@ export default function TestimonialsSection() {
                   src={t.photo}
                   alt={t.name}
                   className="h-10 w-10 rounded-full object-cover"
+                  loading="lazy"
                 />
                 <div>
                   <p className="text-sm font-bold text-ink">— {t.name}</p>
