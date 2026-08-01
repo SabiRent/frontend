@@ -5,9 +5,15 @@ interface UnitTableProps {
   units: Unit[];
   onEdit?: (unit: Unit) => void;
   onDelete?: (unit: Unit) => void;
+  onAssignTenant?: (unit: Unit) => void;
 }
 
-const UnitTable = ({ units, onEdit, onDelete }: UnitTableProps) => {
+const UnitTable = ({
+  units,
+  onEdit,
+  onDelete,
+  onAssignTenant,
+}: UnitTableProps) => {
   return (
     <div className="overflow-x-auto rounded-lg bg-white px-4 py-1 shadow-sm">
       {/* Header */}
@@ -32,6 +38,7 @@ const UnitTable = ({ units, onEdit, onDelete }: UnitTableProps) => {
             unit={unit}
             onEdit={onEdit}
             onDelete={onDelete}
+            onAssignTenant={onAssignTenant}
           />
         ))}
       </div>
