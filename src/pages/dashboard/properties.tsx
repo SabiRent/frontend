@@ -15,6 +15,10 @@ import { AppRoutes } from "@/constants/routes";
 import { useDeleteProperty } from "@/hooks/useDeleteProperty";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useProperties } from "@/hooks/useProperties";
+import type {
+  PropertySortBy,
+  SortOrder,
+} from "@/services/api/property.service";
 import type { Property } from "@/services/api/types";
 import { toast } from "sonner";
 
@@ -23,6 +27,8 @@ const Properties = () => {
   const [view, setView] = useState<"list" | "grid">("list");
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<PropertySortBy>("createdAt");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [addingUnitProperty, setAddingUnitProperty] = useState<Property | null>(
     null,
@@ -35,6 +41,8 @@ const Properties = () => {
   const { data, isLoading, isError } = useProperties({
     page,
     limit: DEFAULT_LIMIT,
+    sortBy,
+    sortOrder,
     ...(debouncedSearch ? { search: debouncedSearch } : {}),
   });
 
@@ -62,8 +70,15 @@ const Properties = () => {
     <div className="space-y-7">
       <PropertiesToolbar
         search={search}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
         onSearchChange={(value) => {
           setSearch(value);
+          setPage(1);
+        }}
+        onSortChange={(nextSortBy, nextSortOrder) => {
+          setSortBy(nextSortBy);
+          setSortOrder(nextSortOrder);
           setPage(1);
         }}
       />

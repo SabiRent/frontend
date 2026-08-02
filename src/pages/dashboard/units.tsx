@@ -13,12 +13,18 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useDeleteUnit } from "@/hooks/useDeleteUnit";
 import { useUnits } from "@/hooks/useUnits";
 import type { Unit } from "@/services/api/types";
+import type { OccupancyStatus } from "@/services/api/types";
+import type { SortOrder, UnitSortBy } from "@/services/api/unit.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
 const Units = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [property, setProperty] = useState<string>();
+  const [occupancyStatus, setOccupancyStatus] = useState<OccupancyStatus>();
+  const [sortBy, setSortBy] = useState<UnitSortBy>("createdAt");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [page, setPage] = useState(1);
   const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
   const [assigningTenantUnit, setAssigningTenantUnit] = useState<Unit | null>(
@@ -30,6 +36,10 @@ const Units = () => {
   const { data, isLoading, isError } = useUnits({
     page,
     limit: DEFAULT_LIMIT,
+    property,
+    occupancyStatus,
+    sortBy,
+    sortOrder,
     ...(debouncedSearch ? { search: debouncedSearch } : {}),
   });
 
@@ -51,8 +61,25 @@ const Units = () => {
     <div className="space-y-8">
       <UnitsToolbar
         search={search}
+        property={property}
+        occupancyStatus={occupancyStatus}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
         onSearchChange={(value) => {
           setSearch(value);
+          setPage(1);
+        }}
+        onFilterChange={({
+          property: nextProperty,
+          occupancyStatus: nextStatus,
+        }) => {
+          setProperty(nextProperty);
+          setOccupancyStatus(nextStatus);
+          setPage(1);
+        }}
+        onSortChange={(nextSortBy, nextSortOrder) => {
+          setSortBy(nextSortBy);
+          setSortOrder(nextSortOrder);
           setPage(1);
         }}
       />

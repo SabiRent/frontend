@@ -18,12 +18,15 @@ export async function fetchPropertyUnits(
   return data;
 }
 
+export type PropertySortBy = "name" | "createdAt" | "unitCount";
+export type SortOrder = "asc" | "desc";
+
 export interface PropertyQuery {
   page?: number;
   limit?: number;
   search?: string;
-  sortBy?: "name" | "createdAt" | "unitCount";
-  sortOrder?: "asc" | "desc";
+  sortBy?: PropertySortBy;
+  sortOrder?: SortOrder;
 }
 
 export async function fetchProperties(
