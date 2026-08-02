@@ -8,10 +8,17 @@ import type {
   OccupancyStatus,
 } from "@/services/api/types";
 
+export type UnitSortBy = "name" | "createdAt";
+export type SortOrder = "asc" | "desc";
+
 export interface UnitQuery {
   page?: number;
   limit?: number;
+  property?: string;
   search?: string;
+  occupancyStatus?: OccupancyStatus;
+  sortBy?: UnitSortBy;
+  sortOrder?: SortOrder;
 }
 
 export interface CreateUnitPayload {
