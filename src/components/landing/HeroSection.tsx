@@ -1,4 +1,6 @@
 import arrowCircle from "@/assets/icons/arrow-circle.svg";
+import storyBuilding from "@/assets/images/storyBuilding.png";
+import buildingssssCopy from "@/assets/images/buildingssssCopy.png";
 import { Button } from "@/components/Button/Button";
 import { AppRoutes } from "@/constants/routes";
 import { useNavigate } from "react-router";
@@ -27,9 +29,8 @@ export default function HeroSection() {
 
           <p className="mt-5 max-w-md text-sm font-light leading-6 text-ink-muted sm:text-base">
             Managing rental properties shouldn't mean juggling notebooks,
-            spreadsheets, and <br />
-            endless chat history. MyCompound brings everything together in one
-            workspace
+            spreadsheets, and endless chat history. MyCompound brings everything
+            together in one workspace
             <br />
             built for House owners &amp; House Managers.
           </p>
@@ -60,15 +61,15 @@ export default function HeroSection() {
           />
           <div className="relative z-10 flex gap-3">
             <img
-              src="/images/building-1.svg"
+              src={buildingssssCopy}
               alt="Residential property exterior"
               className="mt-15 h-69 w-68 rounded-3xl object-cover"
               fetchPriority="high"
             />
             <img
-              src="/images/building-2.svg"
+              src={storyBuilding}
               alt="Apartment building exterior"
-              className="h-auto min-w-0 flex-1 rounded-3xl border-2 border-white object-cover md:h-84"
+              className="h-auto min-w-0 flex-1 rounded-3xl object-cover md:h-84"
               fetchPriority="high"
             />
           </div>

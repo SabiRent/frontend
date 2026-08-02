@@ -3,7 +3,6 @@ import NotificationButton from "@/components/NotificationButton/NotificationButt
 import { Button } from "@/components/Button/Button";
 import Modal from "@/components/Modal/Modal";
 import { TextInput } from "@/components/TextInput/TextInput";
-import avatarImage from "@/assets/images/avatar.png";
 import { properties } from "@/data";
 import { useUpdateProfile } from "@/hooks/useUpdateProfile";
 import { useUploadUserAvatar } from "@/hooks/useUploadUserAvatar";
@@ -244,7 +243,7 @@ const Profile = () => {
           <div className="relative w-fit">
             <Avatar
               fullname={fullName}
-              src={user?.avatarUrl ?? avatarImage}
+              src={user?.avatarUrl}
               size="xl"
               className="ring-4 ring-[#EAF3F7]"
             />
@@ -271,9 +270,7 @@ const Profile = () => {
         </div>
 
         <section className="mt-6 rounded-xl border border-[#E5EAF0] px-4 py-3 shadow-sm">
-          <h3 className="text-2xl font-medium text-[#1F2937]">
-            Personal Info
-          </h3>
+          <h3 className="text-2xl font-medium text-[#1F2937]">Personal Info</h3>
 
           <dl className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-20">
             <div>
@@ -315,9 +312,7 @@ const Profile = () => {
                     <p className="text-3xl font-medium leading-none text-[#3C4A4E]">
                       {item.value}
                     </p>
-                    <p className="mt-2 text-xs text-[#98A2B3]">
-                      {item.label}
-                    </p>
+                    <p className="mt-2 text-xs text-[#98A2B3]">{item.label}</p>
                   </div>
                 </div>
               );

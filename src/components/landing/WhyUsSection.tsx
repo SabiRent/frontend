@@ -97,7 +97,7 @@ export default function WhyUsSection() {
           </div>
         </div>
 
-        <div>
+        <div className="-mt-2 md:-mt-6 lg:-mt-40">
           <span className="text-sm font-semibold text-[rgb(22,117,137)]">
             Why Us —
           </span>
@@ -116,12 +116,12 @@ export default function WhyUsSection() {
             {STATS.map((stat) => (
               <div
                 key={stat.label}
-                className="flex min-h-[78px] w-full items-center justify-center rounded-2xl border border-[rgba(195,197,198,1)] bg-[rgba(195,197,198,0.2)] px-3 text-center"
+                className="flex min-h-[98px] w-full flex-col items-center justify-center rounded-2xl border border-[rgba(195,197,198,1)] bg-[rgba(248,249,250,0.9)] px-3 text-center shadow-sm"
               >
-                <p className="mt-2 my-[-5px] text-lg font-bold text-ink">
+                <p className="text-[1.8rem] font-bold leading-none text-[#D9950D] md:text-[1.9rem]">
                   {stat.value}
                 </p>
-                <p className="mt-1 text-xs font-medium text-ink-muted">
+                <p className="mt-1 text-sm font-medium leading-5 text-[rgba(30,58,95,1)]">
                   {stat.label}
                 </p>
               </div>

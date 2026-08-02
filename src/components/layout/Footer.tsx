@@ -58,8 +58,8 @@ export default function FooterSection() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[rgba(232,241,243,1)] px-6 pt-10 md:px-16">
-        <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <footer className="bg-[rgba(232,241,243,1)] px-[60px] pt-10">
+        <div className="mx-auto flex max-w-[calc(100%-0px)] flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
           <Link to={AppRoutes.landing}>
             <img src={logo} alt="MyCompound" className="h-6 w-auto" />
           </Link>
@@ -78,7 +78,7 @@ export default function FooterSection() {
           </div>
         </div>
 
-        <div className="mx-auto mt-6 grid max-w-6xl grid-cols-1 gap-8 border-t border-[rgba(195,197,198,1)] pt-8 sm:grid-cols-2 md:grid-cols-4">
+        <div className="mx-auto mt-6 grid max-w-[calc(100%-0px)] grid-cols-1 gap-8 border-t border-[rgba(195,197,198,1)] pt-8 sm:grid-cols-2 md:grid-cols-4">
           <div>
             <p className="text-sm font-semibold text-ink">Product</p>
             <ul className="mt-3 space-y-2">
@@ -144,7 +144,7 @@ export default function FooterSection() {
           </div>
         </div>
 
-        <div className="mx-auto mt-6 w-full max-w-6xl border-t border-[rgba(195,197,198,1)] py-4 text-xs text-ink-muted">
+        <div className="mx-auto mt-6 w-full max-w-[calc(100%-0px)] border-t border-[rgba(195,197,198,1)] py-4 text-xs text-ink-muted">
           © 2026. Copyright and All rights reserved.
         </div>
       </footer>
